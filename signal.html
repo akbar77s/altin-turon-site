@@ -55,6 +55,7 @@ a{text-decoration:none;color:inherit}
 .price .pval{font-size:18px;font-weight:500;margin-top:3px;font-variant-numeric:tabular-nums}
 .pval.tp{color:#5fe0a8}.pval.sl{color:#f0a0a0}
 .st{margin-top:12px;display:inline-block;font-size:12px;padding:3px 10px;border-radius:12px}
+.chart{width:100%;display:block;margin-top:14px;border-radius:12px;border:0.5px solid var(--glass-line)}
 .st.open{background:rgba(90,150,255,0.18);color:#a9c9ff}
 .st.tp{background:rgba(63,202,143,0.18);color:#7fe6b0}
 .st.sl{background:rgba(226,75,74,0.18);color:#f0a0a0}
@@ -88,8 +89,8 @@ footer{text-align:center;padding:24px;font-size:12px;color:rgba(255,255,255,0.4)
    Supabase → Settings → API bo'limidan oling:
    - Project URL
    - anon public key                                              */
-const SUPABASE_URL  = "https://cewwbrozmspimmegbhds.supabase.co";
-const SUPABASE_ANON = "sb_publishable_pAuy5WbKAKo-REkCuoxmfA_5Zy3uavd";
+const SUPABASE_URL  = "SIZNING_SUPABASE_URL";
+const SUPABASE_ANON = "SIZNING_ANON_KEY";
 /* ============================================================== */
 
 const fmt = n => (n==null?"—":Number(n).toLocaleString("en-US",{maximumFractionDigits:2}));
@@ -127,6 +128,7 @@ function renderCards(rows){
         <div class="price"><div class="plbl">SL</div><div class="pval sl">${fmt(r.sl)}</div></div>
       </div>
       <span class="st ${stCls}">${STLBL[r.status]||r.status||"ochiq"}</span>
+      ${r.chart_url?`<img class="chart" src="${r.chart_url}" alt="grafik" loading="lazy">`:""}
     </div>`;
   }).join("")+'</div>';
 }
