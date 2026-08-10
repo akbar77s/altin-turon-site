@@ -344,7 +344,11 @@ async function sendChat(){
     });
     const data=await res.json();
     document.getElementById("aiTyping")?.remove();
-    const reply=data.reply || ("Xato: "+(data.error||"javob yo'q"));
+    let reply=data.reply;
+    if(!reply){
+      reply="Xato: "+(data.error||"noma'lum");
+      if(data.detail) reply+=" — "+data.detail;
+    }
     addMsg(reply,"ai");
     aiHistory.push({role:"user",content:v});
     aiHistory.push({role:"assistant",content:reply});
