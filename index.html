@@ -322,13 +322,37 @@ function renderAttach(){
   attachBar.innerHTML=pending.map((n,i)=>`<span class="chip"><b>${n}</b> <span data-i="${i}" style="cursor:pointer">&times;</span></span>`).join("");
   attachBar.querySelectorAll("span[data-i]").forEach(x=>x.onclick=()=>{pending.splice(+x.dataset.i,1);renderAttach();});
 }
-function sendChat(){
+const AI_URL = "https://cewwbrozmspimmegbhds.supabase.co/functions/v1/ai";
+let aiHistory = [];
+
+async function sendChat(){
   const inp=document.getElementById("aiChatText");
   const v=inp.value.trim();
   if(!v&&pending.length===0)return;
   addMsg(v,"user",pending.slice());
   inp.value="";pending=[];renderAttach();
-  setTimeout(()=>addMsg("AI hali ulanmagan — tez kunda javob beradi.","ai"),400);
+
+  const typing=document.createElement("div");
+  typing.className="msg ai";typing.textContent="...";typing.id="aiTyping";
+  messages.appendChild(typing);messages.scrollTop=messages.scrollHeight;
+
+  try{
+    const res=await fetch(AI_URL,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({message:v, history:aiHistory})
+    });
+    const data=await res.json();
+    document.getElementById("aiTyping")?.remove();
+    const reply=data.reply || ("Xato: "+(data.error||"javob yo'q"));
+    addMsg(reply,"ai");
+    aiHistory.push({role:"user",content:v});
+    aiHistory.push({role:"assistant",content:reply});
+    if(aiHistory.length>16) aiHistory=aiHistory.slice(-16);
+  }catch(e){
+    document.getElementById("aiTyping")?.remove();
+    addMsg("Ulanishda xato. Keyinroq urinib ko'ring.","ai");
+  }
 }
 function pick(id){document.getElementById(id).click();}
 ["fileImage","fileDoc","fileAudio"].forEach(id=>{
