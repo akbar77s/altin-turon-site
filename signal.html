@@ -39,13 +39,19 @@ a{text-decoration:none;color:inherit}
 .stat .val{font-size:24px;font-weight:500;margin-top:5px;font-variant-numeric:tabular-nums}
 
 .status-msg{text-align:center;padding:50px 20px;color:rgba(255,255,255,0.7);font-size:15px;line-height:1.6}
+.tabs{display:flex;gap:8px;margin:16px 0 4px}
+.tab{border:0.5px solid var(--glass-line);border-radius:14px;background:var(--glass);color:rgba(255,255,255,0.7);
+  padding:9px 16px;font-size:13.5px;font-family:inherit;cursor:pointer;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.tab.active{background:rgba(255,255,255,0.18);color:var(--ivory)}
 
 .cards{display:flex;flex-direction:column;gap:14px;margin-top:16px}
 .card{background:var(--glass);border:0.5px solid var(--glass-line);border-radius:18px;padding:18px 20px;
   box-shadow:inset 0 1px 0 rgba(255,255,255,0.18);
   backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
 .card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
-.card-head .left{display:flex;align-items:center;gap:10px}
+.card-head .left{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sig-no{font-size:12px;color:rgba(255,255,255,0.55);font-variant-numeric:tabular-nums}
 .ticker{font-weight:500;font-size:16px}
 .badge{font-size:12px;padding:3px 9px;border-radius:12px;background:rgba(255,255,255,0.12);border:0.5px solid var(--glass-line)}
 .tf{font-size:12px;color:rgba(255,255,255,0.65)}
@@ -79,6 +85,11 @@ footer{text-align:center;padding:24px;font-size:12px;color:rgba(255,255,255,0.4)
     <div class="stat"><div class="lbl">Jami signal</div><div class="val" id="stTotal">—</div></div>
   </div>
 
+  <div class="tabs">
+    <button class="tab active" id="tabOpen">Ochiq</button>
+    <button class="tab" id="tabHistory">History (1 hafta)</button>
+  </div>
+
   <div id="content"><div class="status-msg" id="msg">Yuklanmoqda...</div></div>
 </div>
 <footer>Altin Turon &middot; Investing</footer>
@@ -90,7 +101,7 @@ footer{text-align:center;padding:24px;font-size:12px;color:rgba(255,255,255,0.4)
    - Project URL
    - anon public key                                              */
 const SUPABASE_URL  = "https://cewwbrozmspimmegbhds.supabase.co";
-const SUPABASE_ANON = "sb_publishable_pAuy5WbKAKo-REkCuoxmfA_5Zy3uavd";
+const SUPABASE_ANON = "SIZNING_PUBLISHABLE_KEY";
 /* ============================================================== */
 
 const fmt = n => (n==null?"—":Number(n).toLocaleString("en-US",{maximumFractionDigits:2}));
@@ -117,7 +128,7 @@ function renderCards(rows){
     const stCls = r.status==="tp"?"tp":r.status==="sl"?"sl":"open";
     return `<div class="card">
       <div class="card-head">
-        <div class="left"><span class="ticker">${r.ticker||""}</span>
+        <div class="left"><span class="sig-no">${r.signal_no?("#"+String(r.signal_no).padStart(5,"0")):""}</span><span class="ticker">${r.ticker||""}</span>
           ${r.region?`<span class="badge">${r.region}</span>`:""}
           <span class="tf">${r.timeframe||""}</span></div>
         <span class="time">${timeAgo(r.signal_time||r.created_at)}</span>
@@ -133,22 +144,40 @@ function renderCards(rows){
   }).join("")+'</div>';
 }
 
+let curTab = "open";
 async function load(){
   const msg=document.getElementById("msg");
   if(SUPABASE_URL.startsWith("SIZNING")||SUPABASE_ANON.startsWith("SIZNING")){
-    document.getElementById("content").innerHTML='<div class="status-msg">Supabase hali ulanmagan.<br>signal.html ichida SUPABASE_URL va SUPABASE_ANON kalitlarini kiriting.</div>';
+    document.getElementById("content").innerHTML='<div class="status-msg">Supabase hali ulanmagan.</div>';
     return;
   }
   try{
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-    const {data,error} = await sb.from("signals").select("*").order("created_at",{ascending:false}).limit(100);
-    if(error) throw error;
-    renderStats(data||[]);
-    renderCards(data||[]);
+    // Statistika uchun oxirgi 1 hafta
+    const weekAgo = new Date(Date.now()-7*86400000).toISOString();
+    const {data:all} = await sb.from("signals").select("*").gte("created_at",weekAgo)
+      .order("created_at",{ascending:false}).limit(500);
+    renderStats(all||[]);
+
+    if(curTab==="open"){
+      const openRows=(all||[]).filter(r=>r.status==="open");
+      renderCards(openRows);
+    }else{
+      // History: 1 haftalik hammasi (natijasi bilan)
+      renderCards(all||[]);
+    }
   }catch(e){
-    document.getElementById("content").innerHTML='<div class="status-msg">Xato: '+(e.message||e)+'<br>Supabase kalitlari va ruxsat (RLS) to\'g\'riligini tekshiring.</div>';
+    document.getElementById("content").innerHTML='<div class="status-msg">Xato: '+(e.message||e)+'</div>';
   }
 }
+function setTab(t){
+  curTab=t;
+  document.getElementById("tabOpen").classList.toggle("active",t==="open");
+  document.getElementById("tabHistory").classList.toggle("active",t==="history");
+  load();
+}
+document.getElementById("tabOpen").addEventListener("click",()=>setTab("open"));
+document.getElementById("tabHistory").addEventListener("click",()=>setTab("history"));
 document.getElementById("refresh").addEventListener("click",load);
 load();
 setInterval(load,60000);
