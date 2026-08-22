@@ -48,7 +48,8 @@ a{text-decoration:none;color:inherit}
 .cards{display:flex;flex-direction:column;gap:14px;margin-top:16px}
 .card{background:var(--glass);border:0.5px solid var(--glass-line);border-radius:18px;padding:18px 20px;
   box-shadow:inset 0 1px 0 rgba(255,255,255,0.18);
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);cursor:pointer;transition:background .18s ease,transform .18s ease}
+.card:hover{background:rgba(255,255,255,0.13);transform:translateY(-1px)}
 .card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
 .card-head .left{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .sig-no{font-size:12px;color:rgba(255,255,255,0.55);font-variant-numeric:tabular-nums}
@@ -60,14 +61,52 @@ a{text-decoration:none;color:inherit}
 .price .plbl{font-size:11.5px;color:rgba(255,255,255,0.65)}
 .price .pval{font-size:18px;font-weight:500;margin-top:3px;font-variant-numeric:tabular-nums}
 .pval.tp{color:#5fe0a8}.pval.sl{color:#f0a0a0}
-.st{margin-top:12px;display:inline-block;font-size:12px;padding:3px 10px;border-radius:12px}
+.card-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}
+.st{display:inline-block;font-size:12px;padding:3px 10px;border-radius:12px}
+.rr{font-size:12px;color:rgba(255,255,255,0.62);font-variant-numeric:tabular-nums}
 .chart{width:100%;display:block;margin-top:14px;border-radius:12px;border:0.5px solid var(--glass-line)}
 .st.open{background:rgba(90,150,255,0.18);color:#a9c9ff}
 .st.tp{background:rgba(63,202,143,0.18);color:#7fe6b0}
 .st.sl{background:rgba(226,75,74,0.18);color:#f0a0a0}
 
 footer{text-align:center;padding:24px;font-size:12px;color:rgba(255,255,255,0.4)}
-@media(max-width:560px){.stats{gap:8px}.stat .val{font-size:20px}.prices{gap:8px}.price .pval{font-size:16px}}
+.drawer-overlay{position:fixed;inset:0;z-index:50;display:none;background:rgba(11,20,40,0.58);align-items:flex-end;justify-content:center;padding:20px}
+.drawer-overlay.open{display:flex}
+.drawer{width:100%;max-width:720px;max-height:min(86vh,760px);overflow:auto;border-radius:24px;background:rgba(255,255,255,0.10);border:0.5px solid var(--glass-line);box-shadow:inset 0 1px 0 rgba(255,255,255,0.22);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+.drawer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:20px 22px;border-bottom:0.5px solid rgba(255,255,255,0.12)}
+.drawer-title{font-family:'Marcellus',serif;font-size:25px}
+.drawer-sub{display:flex;gap:8px;flex-wrap:wrap;margin-top:7px}
+.drawer-close{width:38px;height:38px;border:0.5px solid var(--glass-line);border-radius:13px;background:rgba(255,255,255,0.10);color:var(--ivory);font-size:24px;line-height:1;cursor:pointer}
+.drawer-body{padding:20px 22px 22px}
+.detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.detail-box{border:0.5px solid rgba(255,255,255,0.16);border-radius:16px;padding:14px;background:rgba(255,255,255,0.07)}
+.detail-box .plbl{font-size:12px;color:rgba(255,255,255,0.62)}
+.detail-box .pval{font-size:22px;margin-top:4px;font-variant-numeric:tabular-nums}
+.detail-note{margin-top:16px;font-size:13px;line-height:1.55;color:rgba(255,255,255,0.72)}
+.detail-chart{width:100%;display:block;margin-top:16px;border-radius:16px;border:0.5px solid var(--glass-line)}
+@media(max-width:560px){
+  .wrap{padding:0 20px 44px}
+  .topbar{padding-top:18px}
+  .title{font-size:22px}
+  .stats{gap:8px;margin-top:12px}
+  .stat{padding:12px 10px;border-radius:14px}
+  .stat .lbl{font-size:11px}
+  .stat .val{font-size:20px}
+  .tabs{margin-top:12px}
+  .cards{gap:10px;margin-top:12px}
+  .card{padding:12px 14px;border-radius:16px}
+  .card-head{margin-bottom:10px}
+  .ticker{font-size:15px}
+  .badge,.tf,.time,.sig-no{font-size:11px}
+  .prices{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .price .plbl{font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .price .pval{font-size:15px}
+  .chart{display:none}
+  .drawer-overlay{padding:0;align-items:flex-end}
+  .drawer{max-height:88vh;border-radius:24px 24px 0 0}
+  .detail-grid{grid-template-columns:1fr}
+  .detail-box .pval{font-size:20px}
+}
 </style>
 </head>
 <body>
@@ -94,6 +133,19 @@ footer{text-align:center;padding:24px;font-size:12px;color:rgba(255,255,255,0.4)
 </div>
 <footer>Altin Turon &middot; Investing</footer>
 
+<div class="drawer-overlay" id="detailOverlay" aria-hidden="true">
+  <div class="drawer" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <div class="drawer-head">
+      <div>
+        <div class="drawer-title" id="detailTitle">Signal</div>
+        <div class="drawer-sub" id="detailSub"></div>
+      </div>
+      <button class="drawer-close" id="detailClose" aria-label="Yopish">&times;</button>
+    </div>
+    <div class="drawer-body" id="detailBody"></div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* ====== SOZLAMA — Supabase kalitlarini shu yerga qo'ying ======
@@ -114,6 +166,22 @@ function timeAgo(iso){
   return Math.round(d/1440)+" kun oldin";
 }
 const STLBL = {open:"ochiq", tp:"foyda oldi", sl:"stop (SL)", closed:"yopildi"};
+let latestRows = [];
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+function riskReward(r){
+  const entry = Number(r.entry), tp = Number(r.tp), sl = Number(r.sl);
+  if(!Number.isFinite(entry)||!Number.isFinite(tp)||!Number.isFinite(sl)) return "R/R —";
+  const risk = Math.abs(entry-sl), reward = Math.abs(tp-entry);
+  if(!risk) return "R/R —";
+  return "R/R "+(reward/risk).toFixed(2);
+}
+function statusClass(status){
+  return status==="tp"?"tp":status==="sl"?"sl":"open";
+}
+function signalNo(r){
+  return r.signal_no?("#"+String(r.signal_no).padStart(5,"0")):"";
+}
 
 function renderStats(rows){
   const open = rows.filter(r=>r.status==="open").length;
@@ -125,10 +193,11 @@ function renderCards(rows){
   const c=document.getElementById("content");
   if(!rows.length){c.innerHTML='<div class="status-msg">Hozircha signal yo\'q.<br>Bot signal yuborganda shu yerda ko\'rinadi.</div>';return;}
   c.innerHTML='<div class="cards">'+rows.map(r=>{
-    const stCls = r.status==="tp"?"tp":r.status==="sl"?"sl":"open";
-    return `<div class="card">
+    const stCls = statusClass(r.status);
+    const id = r.id || r.signal_no || "";
+    return `<div class="card" data-id="${id}" tabindex="0" role="button" aria-label="${r.ticker||"Signal"} tafsilotlari">
       <div class="card-head">
-        <div class="left"><span class="sig-no">${r.signal_no?("#"+String(r.signal_no).padStart(5,"0")):""}</span><span class="ticker">${r.ticker||""}</span>
+        <div class="left"><span class="sig-no">${signalNo(r)}</span><span class="ticker">${r.ticker||""}</span>
           ${r.region?`<span class="badge">${r.region}</span>`:""}
           <span class="tf">${r.timeframe||""}</span></div>
         <span class="time">${timeAgo(r.signal_time||r.created_at)}</span>
@@ -138,10 +207,43 @@ function renderCards(rows){
         <div class="price"><div class="plbl">Kutilayotgan foyda</div><div class="pval tp">${fmt(r.tp)}</div></div>
         <div class="price"><div class="plbl">SL</div><div class="pval sl">${fmt(r.sl)}</div></div>
       </div>
-      <span class="st ${stCls}">${STLBL[r.status]||r.status||"ochiq"}</span>
+      <div class="card-foot"><span class="st ${stCls}">${STLBL[r.status]||r.status||"ochiq"}</span><span class="rr">${riskReward(r)}</span></div>
       ${r.chart_url?`<img class="chart" src="${r.chart_url}" alt="grafik" loading="lazy">`:""}
     </div>`;
   }).join("")+'</div>';
+  c.querySelectorAll(".card").forEach(card=>{
+    card.addEventListener("click",()=>openDetail(card.dataset.id));
+    card.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openDetail(card.dataset.id);}});
+  });
+}
+function openDetail(id){
+  const r = latestRows.find(x=>String(x.id||x.signal_no||"")===String(id));
+  if(!r) return;
+  const stCls = statusClass(r.status);
+  document.getElementById("detailTitle").textContent = `${r.ticker||"Signal"} ${signalNo(r)}`;
+  document.getElementById("detailSub").innerHTML = `
+    ${r.region?`<span class="badge">${r.region}</span>`:""}
+    ${r.timeframe?`<span class="badge">${r.timeframe}</span>`:""}
+    <span class="st ${stCls}">${STLBL[r.status]||r.status||"ochiq"}</span>
+    <span class="badge">${timeAgo(r.signal_time||r.created_at)}</span>`;
+  document.getElementById("detailBody").innerHTML = `
+    <div class="detail-grid">
+      <div class="detail-box"><div class="plbl">Eng yaxshi narx</div><div class="pval">${fmt(r.entry)}</div></div>
+      <div class="detail-box"><div class="plbl">Kutilayotgan foyda</div><div class="pval tp">${fmt(r.tp)}</div></div>
+      <div class="detail-box"><div class="plbl">Stop loss</div><div class="pval sl">${fmt(r.sl)}</div></div>
+    </div>
+    <div class="detail-note">
+      ${riskReward(r)}. Bu signal kuzatuv va tahlil uchun. Savdo qarorini qabul qilishdan oldin riskni o'zingiz baholang.
+    </div>
+    ${r.chart_url?`<img class="detail-chart" src="${r.chart_url}" alt="Signal grafigi">`:""}`;
+  const overlay=document.getElementById("detailOverlay");
+  overlay.classList.add("open");
+  overlay.setAttribute("aria-hidden","false");
+}
+function closeDetail(){
+  const overlay=document.getElementById("detailOverlay");
+  overlay.classList.remove("open");
+  overlay.setAttribute("aria-hidden","true");
 }
 
 let curTab = "open";
@@ -152,7 +254,6 @@ async function load(){
     return;
   }
   try{
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
     // Statistika uchun oxirgi 1 hafta
     const weekAgo = new Date(Date.now()-7*86400000).toISOString();
     const {data:all} = await sb.from("signals").select("*").gte("created_at",weekAgo)
@@ -161,9 +262,11 @@ async function load(){
 
     if(curTab==="open"){
       const openRows=(all||[]).filter(r=>r.status==="open");
+      latestRows = openRows;
       renderCards(openRows);
     }else{
       // History: 1 haftalik hammasi (natijasi bilan)
+      latestRows = all||[];
       renderCards(all||[]);
     }
   }catch(e){
@@ -179,6 +282,9 @@ function setTab(t){
 document.getElementById("tabOpen").addEventListener("click",()=>setTab("open"));
 document.getElementById("tabHistory").addEventListener("click",()=>setTab("history"));
 document.getElementById("refresh").addEventListener("click",load);
+document.getElementById("detailClose").addEventListener("click",closeDetail);
+document.getElementById("detailOverlay").addEventListener("click",e=>{if(e.target.id==="detailOverlay")closeDetail();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeDetail();});
 load();
 setInterval(load,60000);
 </script>

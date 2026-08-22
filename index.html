@@ -108,6 +108,12 @@ footer{text-align:center;padding:28px;font-size:12px;color:rgba(255,255,255,0.4)
 .msg{max-width:80%;padding:12px 16px;border-radius:18px;font-size:14.5px;line-height:1.5;border:0.5px solid rgba(255,255,255,0.16)}
 .msg.user{align-self:flex-end;background:rgba(255,255,255,0.16)}
 .msg.ai{align-self:flex-start;background:rgba(255,255,255,0.07)}
+.msg h3{font-family:'Marcellus',serif;font-size:18px;font-weight:400;margin:6px 0 8px}
+.msg p{margin:7px 0}
+.msg ul,.msg ol{padding-left:20px;margin:8px 0}
+.msg li{margin:5px 0}
+.msg strong{font-weight:600;color:#fff4d6}
+.msg code{font-family:ui-monospace,Consolas,monospace;font-size:13px;background:rgba(255,255,255,0.12);padding:1px 5px;border-radius:6px}
 .msg .att{display:block;font-size:12px;color:rgba(255,255,255,0.7);margin-top:4px}
 .ai-attach{display:flex;gap:8px;flex-wrap:wrap;padding:0 22px 6px}
 .chip{display:flex;align-items:center;gap:6px;font-size:12px;padding:5px 10px;border-radius:14px;background:rgba(255,255,255,0.12);border:0.5px solid var(--glass-line)}
@@ -121,6 +127,18 @@ footer{text-align:center;padding:28px;font-size:12px;color:rgba(255,255,255,0.4)
 .ai-chat-send{width:46px;height:42px;flex:none;border:0.5px solid var(--glass-line);border-radius:14px;background:rgba(255,255,255,0.18);color:var(--ivory);font-size:19px;cursor:pointer}
 .ai-chat-send:hover{background:rgba(255,255,255,0.28)}
 @media (max-width:560px){.ai-chat{height:88vh;max-width:none}.msg{max-width:88%}.icon-btn{width:38px;height:38px}}
+
+.soon-overlay{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(11,20,40,0.58)}
+.soon-overlay.open{display:flex}
+.soon-modal{width:100%;max-width:430px;border-radius:24px;padding:24px;background:rgba(255,255,255,0.10);border:0.5px solid var(--glass-line);box-shadow:inset 0 1px 0 rgba(255,255,255,0.22);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+.soon-head{display:flex;align-items:center;gap:13px}
+.soon-ico{width:52px;height:52px;border-radius:18px;background:rgba(255,255,255,0.12);border:0.5px solid var(--glass-line);display:flex;align-items:center;justify-content:center;flex:none}
+.soon-ico svg{width:28px;height:28px}
+.soon-title{font-family:'Marcellus',serif;font-size:23px}
+.soon-kicker{font-size:12px;color:rgba(255,255,255,0.6);margin-top:2px}
+.soon-body{font-size:14px;line-height:1.55;color:rgba(255,255,255,0.82);margin-top:16px}
+.soon-close{margin-top:20px;width:100%;border:0.5px solid var(--glass-line);border-radius:14px;background:rgba(255,255,255,0.16);color:var(--ivory);font-family:inherit;font-size:14px;padding:12px;cursor:pointer}
+.soon-close:hover{background:rgba(255,255,255,0.25)}
 
 /* ===== Telefon versiyasi ===== */
 @media (max-width:560px){
@@ -217,17 +235,46 @@ footer{text-align:center;padding:28px;font-size:12px;color:rgba(255,255,255,0.4)
   </div>
 </div>
 
+<div class="soon-overlay" id="soonOverlay" aria-hidden="true">
+  <div class="soon-modal" role="dialog" aria-modal="true" aria-labelledby="soonTitle">
+    <div class="soon-head">
+      <div class="soon-ico" id="soonIcon"></div>
+      <div>
+        <div class="soon-title" id="soonTitle">Tez kunda</div>
+        <div class="soon-kicker">Altin Turon roadmap</div>
+      </div>
+    </div>
+    <div class="soon-body" id="soonBody"></div>
+    <button class="soon-close" id="soonClose">Tushunarli</button>
+  </div>
+</div>
+
 <script>
-const STAR = `<svg viewBox="0 0 60 60" aria-hidden="true">
-  <polygon points="30,4 56,30 30,56 4,30" fill="none" stroke="rgba(255,255,255,0.72)" stroke-width="0.8"/>
-  <polygon points="11.6,11.6 48.4,11.6 48.4,48.4 11.6,48.4" fill="none" stroke="rgba(255,255,255,0.72)" stroke-width="0.8"/>
-  <polygon points="30,4 34.2,19.8 48.4,11.6 40.2,25.8 56,30 40.2,34.2 48.4,48.4 34.2,40.2 30,56 25.8,40.2 11.6,48.4 19.8,34.2 4,30 19.8,25.8 11.6,11.6 25.8,19.8" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.92)" stroke-width="0.8"/>
-  <polygon points="35,18 42,25 42,35 35,42 25,42 18,35 18,25 25,18" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="0.7"/>
-  <circle cx="30" cy="30" r="5" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="0.7"/>
-</svg>`;
+const icon = body => `<svg viewBox="0 0 60 60" aria-hidden="true" fill="none" stroke="rgba(255,255,255,0.88)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`;
+const ICONS = {
+  payments: icon(`<rect x="11" y="18" width="38" height="25" rx="5"/><path d="M11 25h38"/><path d="M18 36h10"/><circle cx="42" cy="36" r="2"/>`),
+  budget: icon(`<path d="M16 43V19"/><path d="M28 43V13"/><path d="M40 43V25"/><path d="M12 43h36"/><path d="M17 21l8 8 9-13 9 6"/>`),
+  community: icon(`<circle cx="30" cy="22" r="7"/><circle cx="17" cy="28" r="5"/><circle cx="43" cy="28" r="5"/><path d="M19 45c2-7 7-10 11-10s9 3 11 10"/><path d="M8 43c2-5 5-8 10-8"/><path d="M52 43c-2-5-5-8-10-8"/>`),
+  signal: icon(`<path d="M13 42h34"/><path d="M17 37l8-9 7 5 11-15"/><path d="M39 18h6v6"/><circle cx="25" cy="28" r="2"/><circle cx="32" cy="33" r="2"/>`),
+  news: icon(`<rect x="14" y="13" width="32" height="36" rx="4"/><path d="M22 23h16"/><path d="M22 31h16"/><path d="M22 39h10"/>`),
+  zakat: icon(`<path d="M30 10c8 8 14 15 14 24a14 14 0 0 1-28 0c0-9 6-16 14-24z"/><path d="M24 35c3 4 9 4 12 0"/><path d="M24 26h12"/>`),
+  education: icon(`<path d="M10 22l20-10 20 10-20 10-20-10z"/><path d="M18 27v10c6 5 18 5 24 0V27"/><path d="M50 22v14"/>`),
+  charity: icon(`<path d="M30 47s-16-9-16-22c0-5 4-9 9-9 3 0 6 2 7 5 1-3 4-5 7-5 5 0 9 4 9 9 0 13-16 22-16 22z"/><path d="M30 21v14"/><path d="M23 28h14"/>`),
+  about: icon(`<circle cx="30" cy="30" r="18"/><path d="M30 27v13"/><path d="M30 20h.01"/>`)
+};
 
 const SECTIONS = ["payments","budget","community","signal","news","zakat","education","charity","about"];
 const LINKS = {payments:"#",budget:"#",community:"#",signal:"signal.html",news:"#",zakat:"#",education:"#",charity:"#",about:"#"};
+const COMING_SOON = {
+  payments:"To'lovlar moduli keyingi bosqichda wallet, QR to'lov va transfer flow bilan ochiladi.",
+  budget:"Kirim-chiqim moduli shaxsiy moliya, kategoriyalar va oylik nazorat uchun tayyorlanadi.",
+  community:"Jamiyat moduli halal moliya hamjamiyati, savol-javob va maslahatlar uchun ochiladi.",
+  news:"Yangiliklar bo'limida bozor, iqtisod va islom moliyasi yangiliklari jamlanadi.",
+  zakat:"Zakat kalkulyatori nisob, oltin, naqd pul va savdo mollari hisobini beradi.",
+  education:"Ta'lim bo'limi moliyaviy savodxonlik va islom moliyasi darslari uchun.",
+  charity:"Ehson moduli ishonchli xayriya loyihalari va shaffof hisobotlar bilan ishlaydi.",
+  about:"Altin Turon haqida sahifasi missiya, roadmap va aloqa ma'lumotlarini ko'rsatadi."
+};
 
 const T = {
   uz:{aiTitle:"AI yordamchi",aiSub:"Moliya, aksiya va islom moliyasi bo'yicha so'rang",aiPh:"Savolingizni yozing...",
@@ -257,8 +304,9 @@ function buildGrid(){
   grid.innerHTML = "";
   SECTIONS.forEach((key,i)=>{
     const a = document.createElement("a");
-    a.className = "tile"; a.href = LINKS[key]; a.style.animationDelay = (i*45)+"ms";
-    a.innerHTML = `<div class="glass">${STAR}</div><span class="tile-label" data-k="${key}">${T[lang][key]}</span>`;
+    a.className = "tile"; a.href = LINKS[key]; a.dataset.key = key; a.style.animationDelay = (i*45)+"ms";
+    a.innerHTML = `<div class="glass">${ICONS[key]}</div><span class="tile-label" data-k="${key}">${T[lang][key]}</span>`;
+    if(LINKS[key]==="#") a.addEventListener("click",showComingSoon);
     grid.appendChild(a);
   });
 }
@@ -312,10 +360,43 @@ function openChat(first){
   else{document.getElementById("aiChatText").focus();}
 }
 function closeChat(){overlay.classList.remove("open");overlay.setAttribute("aria-hidden","true");}
+function escapeHtml(value){
+  return String(value||"").replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function renderMarkdown(text){
+  let src = escapeHtml(text).replace(/\r\n/g,"\n").trim();
+  if(!src) return "";
+  src = src.replace(/^###\s+(.+)$/gm,"<h3>$1</h3>");
+  src = src.replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>");
+  src = src.replace(/`([^`]+)`/g,"<code>$1</code>");
+  const lines = src.split("\n");
+  let html = "", list = null, para = [];
+  const flushPara = () => { if(para.length){ html += `<p>${para.join(" ")}</p>`; para = []; } };
+  const closeList = () => { if(list){ html += `</${list}>`; list = null; } };
+  lines.forEach(line=>{
+    const trimmed = line.trim();
+    if(!trimmed){ flushPara(); closeList(); return; }
+    if(trimmed.startsWith("<h3>")){ flushPara(); closeList(); html += trimmed; return; }
+    const bullet = trimmed.match(/^[-*]\s+(.+)/);
+    const numbered = trimmed.match(/^\d+\.\s+(.+)/);
+    if(bullet || numbered){
+      flushPara();
+      const type = bullet ? "ul" : "ol";
+      if(list !== type){ closeList(); html += `<${type}>`; list = type; }
+      html += `<li>${bullet ? bullet[1] : numbered[1]}</li>`;
+      return;
+    }
+    closeList();
+    para.push(trimmed);
+  });
+  flushPara(); closeList();
+  return html;
+}
 function addMsg(text,who,atts){
   const d=document.createElement("div");d.className="msg "+who;
-  d.textContent=text||"";
-  if(atts&&atts.length){atts.forEach(a=>{const s=document.createElement("span");s.className="att";s.textContent="📎 "+a;d.appendChild(s);});}
+  if(who==="ai") d.innerHTML=renderMarkdown(text);
+  else d.textContent=text||"";
+  if(atts&&atts.length){atts.forEach(a=>{const s=document.createElement("span");s.className="att";s.textContent="File: "+a;d.appendChild(s);});}
   messages.appendChild(d);messages.scrollTop=messages.scrollHeight;
 }
 function renderAttach(){
@@ -376,6 +457,24 @@ overlay.addEventListener("click",e=>{if(e.target===overlay)closeChat();});
 function askAI(){const v=document.getElementById("aiInput").value.trim();document.getElementById("aiInput").value="";openChat(v);}
 document.getElementById("aiSend").addEventListener("click",askAI);
 document.getElementById("aiInput").addEventListener("keydown",e=>{if(e.key==="Enter")askAI();});
+
+const soonOverlay=document.getElementById("soonOverlay");
+function showComingSoon(e){
+  e.preventDefault();
+  const key=e.currentTarget.dataset.key;
+  document.getElementById("soonIcon").innerHTML=ICONS[key]||ICONS.about;
+  document.getElementById("soonTitle").textContent=T[lang][key]||"Tez kunda";
+  document.getElementById("soonBody").textContent=COMING_SOON[key]||"Bu bo'lim keyingi bosqichda ochiladi.";
+  soonOverlay.classList.add("open");
+  soonOverlay.setAttribute("aria-hidden","false");
+}
+function closeSoon(){
+  soonOverlay.classList.remove("open");
+  soonOverlay.setAttribute("aria-hidden","true");
+}
+document.getElementById("soonClose").addEventListener("click",closeSoon);
+soonOverlay.addEventListener("click",e=>{if(e.target===soonOverlay)closeSoon();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeChat();closeSoon();}});
 
 buildGrid(); applyLang();
 setInterval(renderSessions,30000);
