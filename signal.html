@@ -27,24 +27,12 @@ html,body{margin:0;padding:0;background:#101B33;-webkit-font-smoothing:antialias
 const SUPABASE_URL = "https://cewwbrozmspimmegbhds.supabase.co";
 const SUPABASE_ANON = "sb_publishable_pAuy5WbKAKo-REkCuoxmfA_5Zy3uavd";
 const STLBL = {open:"Ochiq", tp:"Foyda oldi", sl:"Stop", closed:"Yopilgan"};
-const TV_SYMBOLS = {
-  AAPL:"NASDAQ:AAPL", ADBE:"NASDAQ:ADBE", AMD:"NASDAQ:AMD", AVGO:"NASDAQ:AVGO", MSFT:"NASDAQ:MSFT", NFLX:"NASDAQ:NFLX", NVDA:"NASDAQ:NVDA", QCOM:"NASDAQ:QCOM", CRM:"NYSE:CRM", UBER:"NYSE:UBER",
-  GME:"NYSE:GME", AMC:"NYSE:AMC", KOSS:"NASDAQ:KOSS", CLOV:"NASDAQ:CLOV", RIVN:"NASDAQ:RIVN", LCID:"NASDAQ:LCID", NKLA:"NASDAQ:NKLA", CHPT:"NYSE:CHPT", PLUG:"NASDAQ:PLUG", FCEL:"NASDAQ:FCEL", RUN:"NASDAQ:RUN", PLTR:"NASDAQ:PLTR", SOFI:"NASDAQ:SOFI", HOOD:"NASDAQ:HOOD", RBLX:"NYSE:RBLX", COIN:"NASDAQ:COIN", MARA:"NASDAQ:MARA", RIOT:"NASDAQ:RIOT", UPST:"NASDAQ:UPST", AFRM:"NASDAQ:AFRM", NVAX:"NASDAQ:NVAX", MRNA:"NASDAQ:MRNA", OCGN:"NASDAQ:OCGN", SAVA:"NASDAQ:SAVA", DKNG:"NASDAQ:DKNG", CVNA:"NYSE:CVNA", SPCE:"NYSE:SPCE", AI:"NYSE:AI",
-  "003670.KS":"KRX:003670", "006400.KS":"KRX:006400", "035420.KS":"KRX:035420", "051910.KS":"KRX:051910", "068270.KS":"KRX:068270", "207940.KS":"KRX:207940",
-  "0175.HK":"HKEX:175", "1810.HK":"HKEX:1810", "2015.HK":"HKEX:2015", "9618.HK":"HKEX:9618", "9868.HK":"HKEX:9868",
-  "2308.TW":"TWSE:2308", "2379.TW":"TWSE:2379", "2454.TW":"TWSE:2454", "3008.TW":"TWSE:3008", "3711.TW":"TWSE:3711", "6669.TW":"TWSE:6669",
-  "4063.T":"TSE:4063", "4519.T":"TSE:4519", "4568.T":"TSE:4568", "4661.T":"TSE:4661", "6098.T":"TSE:6098", "6146.T":"TSE:6146", "6273.T":"TSE:6273", "6367.T":"TSE:6367", "6503.T":"TSE:6503", "6762.T":"TSE:6762", "6857.T":"TSE:6857", "6954.T":"TSE:6954", "6981.T":"TSE:6981", "7011.T":"TSE:7011", "7269.T":"TSE:7269", "7741.T":"TSE:7741", "9843.T":"TSE:9843",
-  "ALU.AX":"ASX:ALU", "PLS.AX":"ASX:PLS", "PME.AX":"ASX:PME", "WTC.AX":"ASX:WTC", "XRO.AX":"ASX:XRO",
-  "BSE.NS":"NSE:BSE", "CDSL.NS":"NSE:CDSL", "COFORGE.NS":"NSE:COFORGE", "DIXON.NS":"NSE:DIXON", "LTTS.NS":"NSE:LTTS", "MPHASIS.NS":"NSE:MPHASIS", "PERSISTENT.NS":"NSE:PERSISTENT", "POLYCAB.NS":"NSE:POLYCAB", "TATAELXSI.NS":"NSE:TATAELXSI",
-  "AIXA.DE":"XETR:AIXA", "BOSS.DE":"XETR:BOSS", "DUE.DE":"XETR:DUE", "EVK.DE":"XETR:EVK", "FRA.DE":"XETR:FRA", "GXI.DE":"XETR:GXI", "HFG.DE":"XETR:HFG", "KGX.DE":"XETR:KGX", "LHA.DE":"XETR:LHA", "NDA.DE":"XETR:NDA", "NEM.DE":"XETR:NEM", "PSM.DE":"XETR:PSM", "PUM.DE":"XETR:PUM", "RHM.DE":"XETR:RHM", "SDF.DE":"XETR:SDF", "SY1.DE":"XETR:SY1", "WCH.DE":"XETR:WCH", "ZAL.DE":"XETR:ZAL",
-  "AKE.PA":"EURONEXT:AKE", "ALO.PA":"EURONEXT:ALO", "BEN.PA":"EURONEXT:BEN", "ERF.PA":"EURONEXT:ERF", "ML.PA":"EURONEXT:ML", "RCO.PA":"EURONEXT:RCO", "SESG.PA":"EURONEXT:SESG", "UBI.PA":"EURONEXT:UBI", "VLA.PA":"EURONEXT:VLA",
-  "AMG.AS":"EURONEXT:AMG", "ARCAD.AS":"EURONEXT:ARCAD", "BESI.AS":"EURONEXT:BESI", "FUR.AS":"EURONEXT:FUR",
-  "BMED.MI":"MIL:BMED", "IG.MI":"MIL:IG", "LDO.MI":"MIL:LDO", "PIRC.MI":"MIL:PIRC",
-  "CIE.MC":"BME:CIE", "GEST.MC":"BME:GEST", "MAP.MC":"BME:MAP", "SCYR.MC":"BME:SCYR",
-  "BAB.L":"LSE:BAB", "BME.L":"LSE:BME", "CNA.L":"LSE:CNA", "EZJ.L":"LSE:EZJ", "HWDN.L":"LSE:HWDN", "IMI.L":"LSE:IMI", "ITV.L":"LSE:ITV", "MRO.L":"LSE:MRO", "QQ.L":"LSE:QQ", "WEIR.L":"LSE:WEIR",
-  "BARN.SW":"SIX:BARN", "GALE.SW":"SIX:GALE", "SOON.SW":"SIX:SOON", "TEMN.SW":"SIX:TEMN"
+const TV_MAP = {
+  "AAPL":"AAPL", "ADBE":"ADBE", "AMD":"AMD", "AVGO":"AVGO", "CRM":"CRM", "MSFT":"MSFT", "NFLX":"NFLX", "NVDA":"NVDA", "QCOM":"QCOM", "UBER":"UBER",
+  "GME":"GME", "AMC":"AMC", "KOSS":"KOSS", "CLOV":"CLOV", "RIVN":"RIVN", "LCID":"LCID", "NKLA":"NKLA", "CHPT":"CHPT", "PLUG":"PLUG", "FCEL":"FCEL", "RUN":"RUN", "PLTR":"PLTR", "SOFI":"SOFI", "HOOD":"HOOD", "RBLX":"RBLX", "COIN":"COIN", "MARA":"MARA", "RIOT":"RIOT", "UPST":"UPST", "AFRM":"AFRM", "NVAX":"NVAX", "MRNA":"MRNA", "OCGN":"OCGN", "SAVA":"SAVA", "DKNG":"DKNG", "CVNA":"CVNA", "SPCE":"SPCE", "AI":"AI",
+  "003670.KS":"KRX:003670", "006400.KS":"KRX:006400", "0175.HK":"HKEX:175", "035420.KS":"KRX:035420", "051910.KS":"KRX:051910", "068270.KS":"KRX:068270", "1810.HK":"HKEX:1810", "2015.HK":"HKEX:2015", "207940.KS":"KRX:207940", "2308.TW":"TWSE:2308", "2379.TW":"TWSE:2379", "2454.TW":"TWSE:2454", "3008.TW":"TWSE:3008", "3711.TW":"TWSE:3711", "4063.T":"TSE:4063", "4519.T":"TSE:4519", "4568.T":"TSE:4568", "4661.T":"TSE:4661", "6098.T":"TSE:6098", "6146.T":"TSE:6146", "6273.T":"TSE:6273", "6367.T":"TSE:6367", "6503.T":"TSE:6503", "6669.TW":"TWSE:6669", "6762.T":"TSE:6762", "6857.T":"TSE:6857", "6954.T":"TSE:6954", "6981.T":"TSE:6981", "7011.T":"TSE:7011", "7269.T":"TSE:7269", "7741.T":"TSE:7741", "9618.HK":"HKEX:9618", "9843.T":"TSE:9843", "9868.HK":"HKEX:9868", "ALU.AX":"ASX:ALU", "BSE.NS":"NSE:BSE", "CDSL.NS":"NSE:CDSL", "COFORGE.NS":"NSE:COFORGE", "DIXON.NS":"NSE:DIXON", "LTTS.NS":"NSE:LTTS", "MPHASIS.NS":"NSE:MPHASIS", "PERSISTENT.NS":"NSE:PERSISTENT", "PLS.AX":"ASX:PLS", "PME.AX":"ASX:PME", "POLYCAB.NS":"NSE:POLYCAB", "TATAELXSI.NS":"NSE:TATAELXSI", "WTC.AX":"ASX:WTC", "XRO.AX":"ASX:XRO",
+  "AIXA.DE":"XETRA:AIXA", "AKE.PA":"EURONEXT:AKE", "ALO.PA":"EURONEXT:ALO", "AMG.AS":"EURONEXT:AMG", "ARCAD.AS":"EURONEXT:ARCAD", "BAB.L":"LSE:BAB", "BARN.SW":"SIX:BARN", "BEN.PA":"EURONEXT:BEN", "BESI.AS":"EURONEXT:BESI", "BME.L":"LSE:BME", "BMED.MI":"MIL:BMED", "BOSS.DE":"XETRA:BOSS", "CIE.MC":"BME:CIE", "CNA.L":"LSE:CNA", "DUE.DE":"XETRA:DUE", "ERF.PA":"EURONEXT:ERF", "EVK.DE":"XETRA:EVK", "EZJ.L":"LSE:EZJ", "FRA.DE":"XETRA:FRA", "FUR.AS":"EURONEXT:FUR", "GALE.SW":"SIX:GALE", "GEST.MC":"BME:GEST", "GXI.DE":"XETRA:GXI", "HFG.DE":"XETRA:HFG", "HWDN.L":"LSE:HWDN", "IG.MI":"MIL:IG", "IMI.L":"LSE:IMI", "ITV.L":"LSE:ITV", "KGX.DE":"XETRA:KGX", "LDO.MI":"MIL:LDO", "LHA.DE":"XETRA:LHA", "MAP.MC":"BME:MAP", "ML.PA":"EURONEXT:ML", "MRO.L":"LSE:MRO", "NDA.DE":"XETRA:NDA", "NEM.DE":"XETRA:NEM", "PIRC.MI":"MIL:PIRC", "PSM.DE":"XETRA:PSM", "PUM.DE":"XETRA:PUM", "QQ.L":"LSE:QQ", "RCO.PA":"EURONEXT:RCO", "RHM.DE":"XETRA:RHM", "SCYR.MC":"BME:SCYR", "SDF.DE":"XETRA:SDF", "SESG.PA":"EURONEXT:SESG", "SOON.SW":"SIX:SOON", "SY1.DE":"XETRA:SY1", "TEMN.SW":"SIX:TEMN", "UBI.PA":"EURONEXT:UBI", "VLA.PA":"EURONEXT:VLA", "WCH.DE":"XETRA:WCH", "WEIR.L":"LSE:WEIR", "ZAL.DE":"XETRA:ZAL"
 };
-const SUFFIX_EXCHANGES = [[".KS","KRX:"],[".HK","HKEX:"],[".TW","TWSE:"],[".T","TSE:"],[".AX","ASX:"],[".NS","NSE:"],[".DE","XETR:"],[".PA","EURONEXT:"],[".AS","EURONEXT:"],[".MI","MIL:"],[".MC","BME:"],[".L","LSE:"],[".SW","SIX:"],[".BR","EURONEXT:"],[".LS","EURONEXT:"],[".CO","OMXCOP:"],[".OL","OSL:"],[".HE","OMXHEX:"]];
 const TF_TO_TV_INTERVAL = {"30m":"30", "1h":"60", "4h":"240"};
 let curTab = "open", allRows = [], visibleRows = [], selectedKey = "";
 const filters = {market:"", tf:"", status:""};
@@ -55,16 +43,16 @@ function tvSymbol(ticker){
   const raw=String(ticker||"").toUpperCase().trim();
   if(!raw) return "";
   if(raw.includes(":")) return raw;
-  if(TV_SYMBOLS[raw]) return TV_SYMBOLS[raw];
-  for(const [suffix,exchange] of SUFFIX_EXCHANGES){
-    if(raw.endsWith(suffix)){
-      let base=raw.slice(0,-suffix.length);
-      if(suffix===".HK") base=String(Number(base));
-      return exchange+base;
+  if(TV_MAP[raw]) return TV_MAP[raw];
+  const S={".KS":"KRX",".HK":"HKEX",".TW":"TWSE",".T":"TSE",".NS":"NSE",".AX":"ASX",".DE":"XETRA",".PA":"EURONEXT",".AS":"EURONEXT",".L":"LSE",".SW":"SIX",".MI":"MIL",".MC":"BME"};
+  for(const suf in S){
+    if(raw.endsWith(suf)){
+      let b=raw.slice(0,-suf.length);
+      if(suf===".HK") b=String(parseInt(b,10));
+      return S[suf]+":"+b;
     }
   }
-  if(/^[A-Z]{1,5}$/.test(raw)) return TV_SYMBOLS[raw] || "NASDAQ:"+raw;
-  return "";
+  return raw;
 }
 function chartUrl(symbol, interval){const p=new URLSearchParams({frameElementId:"altin_turon_tv_chart",symbol,interval,hidetoptoolbar:"0",hidesidetoolbar:"1",symboledit:"1",saveimage:"0",toolbarbg:"101B33",studies:"[]",theme:"dark",style:"1",timezone:"exchange",withdateranges:"1",hideideas:"1",locale:"en",enabled_features:"[]",disabled_features:"[]"});return "https://s.tradingview.com/widgetembed/?"+p.toString();}
 function selectRow(key){
