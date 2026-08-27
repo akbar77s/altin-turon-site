@@ -9,212 +9,86 @@
 <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-html,body{margin:0;padding:0;background:#101B33;-webkit-font-smoothing:antialiased}
-*{box-sizing:border-box}
-button{font-family:inherit}
-body{font-family:Manrope,system-ui,sans-serif;color:#EFE6D0}
-.bg{position:fixed;inset:0;pointer-events:none;background:radial-gradient(90vw 70vh at 12% -10%,#0E5C63 0%,rgba(14,92,99,0) 62%),radial-gradient(70vw 60vh at 105% 8%,#16223F 0%,rgba(22,34,63,0) 60%),radial-gradient(80vw 70vh at 50% 115%,#0C4A50 0%,rgba(12,74,80,0) 65%),linear-gradient(180deg,#101B33 0%,#0d1729 100%)}
-.girih{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;opacity:.11}
-.veil{position:fixed;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(16,27,51,.35) 0%,rgba(13,23,41,.72) 100%)}
-.page{position:relative;max-width:1280px;margin:0 auto;padding:clamp(18px,3vw,34px) clamp(16px,3vw,32px) 64px}
-.header{display:flex;align-items:center;gap:14px;margin-bottom:22px;flex-wrap:wrap}
-.back,.refresh,.tab,.fbtn,.iconbtn{cursor:pointer;background:rgba(255,255,255,.07);border:.5px solid rgba(255,255,255,.20);color:rgba(239,230,208,.8)}
-.back{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.28);box-shadow:inset 0 1px 0 rgba(255,255,255,.24);color:#EFE6D0}
-h1{margin:0;font-family:Marcellus,serif;font-weight:400;font-size:clamp(22px,3.4vw,32px);letter-spacing:.02em}
-.refresh{margin-left:auto;padding:9px 15px;border-radius:12px;font-size:13px}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(10px,1.6vw,16px);margin-bottom:18px}
-.stat,.panel,.side{background:rgba(255,255,255,.10);border:.5px solid rgba(255,255,255,.28);box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 10px 34px rgba(0,0,0,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-.stat{padding:16px 18px;border-radius:20px}.stat p{margin:0}.stat .label{margin-bottom:7px;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(239,230,208,.5)}.stat .value{font-family:Marcellus,serif;font-size:clamp(21px,3vw,28px)}
-.shell{display:grid;grid-template-columns:360px minmax(0,1fr);gap:16px;align-items:start}.side,.panel{border-radius:20px;overflow:hidden}.side{position:sticky;top:18px;max-height:calc(100vh - 36px);display:flex;flex-direction:column}.sideHead{padding:14px;border-bottom:.5px solid rgba(255,255,255,.14)}
-.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}.tab{padding:9px 10px;border-radius:12px;font-size:13px}.tab.active,.fbtn.active{background:rgba(22,160,168,.32)!important;color:#EFE6D0!important;border-color:rgba(255,255,255,.3)!important}
-.filters{display:flex;flex-direction:column;gap:12px}.fgroup{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.fgroup span{width:100%;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(239,230,208,.5)}.fbtn{padding:6px 10px;border-radius:10px;font-size:12px}.fbtn:hover,.row:hover{background:rgba(255,255,255,.14)}
-.listMeta{display:flex;justify-content:space-between;gap:10px;padding:11px 14px;border-bottom:.5px solid rgba(255,255,255,.12);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(239,230,208,.46)}
-.list{overflow:auto;padding:8px;display:flex;flex-direction:column;gap:8px}.empty{padding:34px 18px;text-align:center;color:rgba(239,230,208,.62);line-height:1.55;font-size:14px}
-.row{width:100%;text-align:left;border:0;border-radius:14px;padding:12px;background:rgba(255,255,255,.06);color:#EFE6D0;transition:background .2s}.row.active{background:rgba(22,160,168,.26);outline:1px solid rgba(143,217,220,.42)}.rowTop{display:flex;align-items:center;gap:8px}.no{font-size:11px;color:rgba(239,230,208,.48);font-variant-numeric:tabular-nums}.ticker{font-size:16px;font-weight:600;letter-spacing:.02em}.ago{margin-left:auto;font-size:11px;color:rgba(239,230,208,.45)}.rowInfo{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.mini{padding:8px;border-radius:10px;background:rgba(255,255,255,.06);border:.5px solid rgba(255,255,255,.14)}.mini small{display:block;margin-bottom:2px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:rgba(239,230,208,.45)}.mini b{font-size:13px;font-weight:500;font-variant-numeric:tabular-nums}.badge{display:inline-flex;margin-top:10px;font-size:10.5px;letter-spacing:.1em;padding:4px 9px;border-radius:9px;border:.5px solid rgba(255,255,255,.2);color:rgba(239,230,208,.8)}
-.chartHead{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:14px 16px;border-bottom:.5px solid rgba(255,255,255,.14)}.chartTitle{font-family:Marcellus,serif;font-size:19px}.chartSub{font-size:12px;color:rgba(239,230,208,.52);margin-top:3px}.tvbox{height:calc(100vh - 250px);min-height:520px;width:100%;background:#101B33}.tvbox iframe{display:block;width:100%;height:100%;border:0}.placeholder{height:520px;display:grid;place-items:center;text-align:center;color:rgba(239,230,208,.62);line-height:1.6;padding:30px}
-footer{margin-top:52px;padding-top:20px;border-top:.5px solid rgba(255,255,255,.14);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:11.5px;letter-spacing:.1em;color:rgba(239,230,208,.42)}
-@media(max-width:900px){.stats{grid-template-columns:1fr}.shell{grid-template-columns:1fr}.side{position:relative;top:auto;max-height:none}.tvbox{height:440px;min-height:360px}.placeholder{height:360px}}
+html,body{margin:0;padding:0;background:#101B33;-webkit-font-smoothing:antialiased}*{box-sizing:border-box}button{font-family:inherit}body{font-family:Manrope,system-ui,sans-serif;color:#EFE6D0}.bg{position:fixed;inset:0;pointer-events:none;background:radial-gradient(90vw 70vh at 12% -10%,#0E5C63 0%,rgba(14,92,99,0) 62%),radial-gradient(70vw 60vh at 105% 8%,#16223F 0%,rgba(22,34,63,0) 60%),radial-gradient(80vw 70vh at 50% 115%,#0C4A50 0%,rgba(12,74,80,0) 65%),linear-gradient(180deg,#101B33 0%,#0d1729 100%)}.girih{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;opacity:.11}.veil{position:fixed;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(16,27,51,.35) 0%,rgba(13,23,41,.72) 100%)}.page{position:relative;max-width:1280px;margin:0 auto;padding:clamp(18px,3vw,34px) clamp(16px,3vw,32px) 64px}.header{display:flex;align-items:center;gap:14px;margin-bottom:22px;flex-wrap:wrap}.back,.refresh,.tab,.fbtn{cursor:pointer;background:rgba(255,255,255,.07);border:.5px solid rgba(255,255,255,.20);color:rgba(239,230,208,.8)}.back{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.28);box-shadow:inset 0 1px 0 rgba(255,255,255,.24);color:#EFE6D0}h1{margin:0;font-family:Marcellus,serif;font-weight:400;font-size:clamp(22px,3.4vw,32px);letter-spacing:.02em}.refresh{margin-left:auto;padding:9px 15px;border-radius:12px;font-size:13px}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(10px,1.6vw,16px);margin-bottom:18px}.stat,.panel,.side{background:rgba(255,255,255,.10);border:.5px solid rgba(255,255,255,.28);box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 10px 34px rgba(0,0,0,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}.stat{padding:16px 18px;border-radius:20px}.stat p{margin:0}.label{margin-bottom:7px;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(239,230,208,.5)}.value{font-family:Marcellus,serif;font-size:clamp(21px,3vw,28px)}.shell{display:grid;grid-template-columns:360px minmax(0,1fr);gap:16px;align-items:start}.side,.panel{border-radius:20px;overflow:hidden}.side{position:sticky;top:18px;max-height:calc(100vh - 36px);display:flex;flex-direction:column}.sideHead{padding:14px;border-bottom:.5px solid rgba(255,255,255,.14)}.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}.tab{padding:9px 10px;border-radius:12px;font-size:13px}.tab.active,.fbtn.active{background:rgba(22,160,168,.32)!important;color:#EFE6D0!important;border-color:rgba(255,255,255,.3)!important}.filters{display:flex;flex-direction:column;gap:12px}.fgroup{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.fgroup span{width:100%;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(239,230,208,.5)}.fbtn{padding:6px 10px;border-radius:10px;font-size:12px}.fbtn:hover,.row:hover{background:rgba(255,255,255,.14)}.listMeta{display:flex;justify-content:space-between;gap:10px;padding:11px 14px;border-bottom:.5px solid rgba(255,255,255,.12);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(239,230,208,.46)}.list{overflow:auto;padding:8px;display:flex;flex-direction:column;gap:8px}.empty{padding:34px 18px;text-align:center;color:rgba(239,230,208,.62);line-height:1.55;font-size:14px}.row{width:100%;text-align:left;border:0;border-radius:14px;padding:12px;background:rgba(255,255,255,.06);color:#EFE6D0;transition:background .2s}.row.active{background:rgba(22,160,168,.26);outline:1px solid rgba(143,217,220,.42)}.rowTop{display:flex;align-items:center;gap:8px}.no{font-size:11px;color:rgba(239,230,208,.48);font-variant-numeric:tabular-nums}.ticker{font-size:16px;font-weight:600;letter-spacing:.02em}.ago{margin-left:auto;font-size:11px;color:rgba(239,230,208,.45)}.rowInfo{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.mini{padding:8px;border-radius:10px;background:rgba(255,255,255,.06);border:.5px solid rgba(255,255,255,.14)}.mini small{display:block;margin-bottom:2px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:rgba(239,230,208,.45)}.mini b{font-size:13px;font-weight:500;font-variant-numeric:tabular-nums}.badge{display:inline-flex;margin-top:10px;font-size:10.5px;letter-spacing:.1em;padding:4px 9px;border-radius:9px;border:.5px solid rgba(255,255,255,.2);color:rgba(239,230,208,.8)}.chartHead{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:14px 16px;border-bottom:.5px solid rgba(255,255,255,.14)}.chartTitle{font-family:Marcellus,serif;font-size:19px}.chartSub{font-size:12px;color:rgba(239,230,208,.52);margin-top:3px}.tvbox{height:calc(100vh - 250px);min-height:520px;width:100%;background:#101B33}.tvbox iframe{display:block;width:100%;height:100%;border:0}.placeholder{height:520px;display:grid;place-items:center;text-align:center;color:rgba(239,230,208,.62);line-height:1.6;padding:30px}footer{margin-top:52px;padding-top:20px;border-top:.5px solid rgba(255,255,255,.14);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:11.5px;letter-spacing:.1em;color:rgba(239,230,208,.42)}@media(max-width:900px){.stats{grid-template-columns:1fr}.shell{grid-template-columns:1fr}.side{position:relative;top:auto;max-height:none}.tvbox{height:440px;min-height:360px}.placeholder{height:360px}}
 </style>
 </head>
 <body>
-<div class="bg"></div>
-<svg class="girih" aria-hidden="true"><defs><pattern id="atGirih" width="96" height="96" patternUnits="userSpaceOnUse"><g fill="none" stroke="#EFE6D0" stroke-width="1"><rect x="24" y="24" width="48" height="48"></rect><rect x="24" y="24" width="48" height="48" transform="rotate(45 48 48)"></rect><circle cx="48" cy="48" r="10"></circle><path d="M0 48 L24 48 M72 48 L96 48 M48 0 L48 24 M48 72 L48 96"></path></g></pattern></defs><rect width="100%" height="100%" fill="url(#atGirih)"></rect></svg>
-<div class="veil"></div>
+<div class="bg"></div><svg class="girih" aria-hidden="true"><defs><pattern id="atGirih" width="96" height="96" patternUnits="userSpaceOnUse"><g fill="none" stroke="#EFE6D0" stroke-width="1"><rect x="24" y="24" width="48" height="48"></rect><rect x="24" y="24" width="48" height="48" transform="rotate(45 48 48)"></rect><circle cx="48" cy="48" r="10"></circle><path d="M0 48 L24 48 M72 48 L96 48 M48 0 L48 24 M48 72 L48 96"></path></g></pattern></defs><rect width="100%" height="100%" fill="url(#atGirih)"></rect></svg><div class="veil"></div>
 <div class="page">
-  <div class="header">
-    <button class="back" onclick="location.href='index.html'" aria-label="Orqaga"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M20 12H5M11 6l-6 6 6 6"></path></svg></button>
-    <h1>Investing</h1>
-    <button id="refresh" class="refresh">↻ Yangilash</button>
-  </div>
-
-  <div class="stats">
-    <div class="stat"><p class="label">Ochiq savdolar</p><p id="stOpen" class="value">—</p></div>
-    <div class="stat"><p class="label">Profit</p><p class="value" style="color:#8FD9DC">87%</p></div>
-    <div class="stat"><p class="label">Jami signal</p><p id="stTotal" class="value">—</p></div>
-  </div>
-
+  <div class="header"><button class="back" onclick="location.href='index.html'" aria-label="Orqaga"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M20 12H5M11 6l-6 6 6 6"></path></svg></button><h1>Investing</h1><button id="refresh" class="refresh">↻ Yangilash</button></div>
+  <div class="stats"><div class="stat"><p class="label">Ochiq savdolar</p><p id="stOpen" class="value">—</p></div><div class="stat"><p class="label">Profit</p><p class="value" style="color:#8FD9DC">87%</p></div><div class="stat"><p class="label">Jami signal</p><p id="stTotal" class="value">—</p></div></div>
   <div class="shell">
-    <aside class="side">
-      <div class="sideHead">
-        <div class="tabs">
-          <button class="tab active" id="tabOpen">Ochiq</button>
-          <button class="tab" id="tabHistory">History</button>
-        </div>
-        <div class="filters">
-          <div class="fgroup" id="fMarket"><span>Bozor</span><button class="fbtn active" data-v="">Hammasi</button><button class="fbtn" data-v="AQSh">Amerika</button><button class="fbtn" data-v="Yevropa">Yevropa</button><button class="fbtn" data-v="Osiyo">Osiyo</button></div>
-          <div class="fgroup" id="fTf"><span>Timeframe</span><button class="fbtn active" data-v="">Hammasi</button><button class="fbtn" data-v="30m">30m</button><button class="fbtn" data-v="1h">1h</button><button class="fbtn" data-v="4h">4h</button></div>
-          <div class="fgroup" id="fStatus"><span>Natija</span><button class="fbtn active" data-v="">Hammasi</button><button class="fbtn" data-v="tp">TP</button><button class="fbtn" data-v="sl">SL</button></div>
-        </div>
-      </div>
-      <div class="listMeta"><span id="listTitle">Pozitsiyalar</span><span id="listCount">0</span></div>
-      <div id="positionList" class="list"><div class="empty">Yuklanmoqda...</div></div>
-    </aside>
-
-    <section class="panel">
-      <div class="chartHead">
-        <div><div id="cpTitle" class="chartTitle">Grafik</div><div id="cpSub" class="chartSub">Chapdagi pozitsiyani tanlang</div></div>
-      </div>
-      <div id="cpTv" class="tvbox"><div class="placeholder">Signal tanlang.<br>Grafik shu yerda jonli ochiladi.</div></div>
-    </section>
+    <aside class="side"><div class="sideHead"><div class="tabs"><button class="tab active" id="tabOpen">Ochiq</button><button class="tab" id="tabHistory">History</button></div><div class="filters"><div class="fgroup" id="fMarket"><span>Bozor</span><button class="fbtn active" data-v="">Hammasi</button><button class="fbtn" data-v="AQSh">Amerika</button><button class="fbtn" data-v="Yevropa">Yevropa</button><button class="fbtn" data-v="Osiyo">Osiyo</button></div><div class="fgroup" id="fTf"><span>Timeframe</span><button class="fbtn active" data-v="">Hammasi</button><button class="fbtn" data-v="30m">30m</button><button class="fbtn" data-v="1h">1h</button><button class="fbtn" data-v="4h">4h</button></div><div class="fgroup" id="fStatus"><span>Natija</span><button class="fbtn active" data-v="">Hammasi</button><button class="fbtn" data-v="tp">TP</button><button class="fbtn" data-v="sl">SL</button></div></div></div><div class="listMeta"><span id="listTitle">Pozitsiyalar</span><span id="listCount">0</span></div><div id="positionList" class="list"><div class="empty">Yuklanmoqda...</div></div></aside>
+    <section class="panel"><div class="chartHead"><div><div id="cpTitle" class="chartTitle">Grafik</div><div id="cpSub" class="chartSub">Chapdagi pozitsiyani tanlang</div></div></div><div id="cpTv" class="tvbox"><div class="placeholder">Signal tanlang.<br>Grafik shu yerda jonli ochiladi.</div></div></section>
   </div>
-
   <footer><span>Altin Turon · Fintech</span><span>Tashkent · 2026</span></footer>
 </div>
-
 <script>
 const SUPABASE_URL = "https://cewwbrozmspimmegbhds.supabase.co";
 const SUPABASE_ANON = "sb_publishable_pAuy5WbKAKo-REkCuoxmfA_5Zy3uavd";
 const STLBL = {open:"Ochiq", tp:"Foyda oldi", sl:"Stop", closed:"Yopilgan"};
 const TV_SYMBOLS = {
+  AAPL:"NASDAQ:AAPL", ADBE:"NASDAQ:ADBE", AMD:"NASDAQ:AMD", AVGO:"NASDAQ:AVGO", MSFT:"NASDAQ:MSFT", NFLX:"NASDAQ:NFLX", NVDA:"NASDAQ:NVDA", QCOM:"NASDAQ:QCOM", CRM:"NYSE:CRM", UBER:"NYSE:UBER",
   GME:"NYSE:GME", AMC:"NYSE:AMC", KOSS:"NASDAQ:KOSS", CLOV:"NASDAQ:CLOV", RIVN:"NASDAQ:RIVN", LCID:"NASDAQ:LCID", NKLA:"NASDAQ:NKLA", CHPT:"NYSE:CHPT", PLUG:"NASDAQ:PLUG", FCEL:"NASDAQ:FCEL", RUN:"NASDAQ:RUN", PLTR:"NASDAQ:PLTR", SOFI:"NASDAQ:SOFI", HOOD:"NASDAQ:HOOD", RBLX:"NYSE:RBLX", COIN:"NASDAQ:COIN", MARA:"NASDAQ:MARA", RIOT:"NASDAQ:RIOT", UPST:"NASDAQ:UPST", AFRM:"NASDAQ:AFRM", NVAX:"NASDAQ:NVAX", MRNA:"NASDAQ:MRNA", OCGN:"NASDAQ:OCGN", SAVA:"NASDAQ:SAVA", DKNG:"NASDAQ:DKNG", CVNA:"NYSE:CVNA", SPCE:"NYSE:SPCE", AI:"NYSE:AI",
-  "ML.PA":"EURONEXT:ML", "FUR.AS":"EURONEXT:FUR", "CNA.L":"LSE:CNA"
+  "003670.KS":"KRX:003670", "006400.KS":"KRX:006400", "035420.KS":"KRX:035420", "051910.KS":"KRX:051910", "068270.KS":"KRX:068270", "207940.KS":"KRX:207940",
+  "0175.HK":"HKEX:175", "1810.HK":"HKEX:1810", "2015.HK":"HKEX:2015", "9618.HK":"HKEX:9618", "9868.HK":"HKEX:9868",
+  "2308.TW":"TWSE:2308", "2379.TW":"TWSE:2379", "2454.TW":"TWSE:2454", "3008.TW":"TWSE:3008", "3711.TW":"TWSE:3711", "6669.TW":"TWSE:6669",
+  "4063.T":"TSE:4063", "4519.T":"TSE:4519", "4568.T":"TSE:4568", "4661.T":"TSE:4661", "6098.T":"TSE:6098", "6146.T":"TSE:6146", "6273.T":"TSE:6273", "6367.T":"TSE:6367", "6503.T":"TSE:6503", "6762.T":"TSE:6762", "6857.T":"TSE:6857", "6954.T":"TSE:6954", "6981.T":"TSE:6981", "7011.T":"TSE:7011", "7269.T":"TSE:7269", "7741.T":"TSE:7741", "9843.T":"TSE:9843",
+  "ALU.AX":"ASX:ALU", "PLS.AX":"ASX:PLS", "PME.AX":"ASX:PME", "WTC.AX":"ASX:WTC", "XRO.AX":"ASX:XRO",
+  "BSE.NS":"NSE:BSE", "CDSL.NS":"NSE:CDSL", "COFORGE.NS":"NSE:COFORGE", "DIXON.NS":"NSE:DIXON", "LTTS.NS":"NSE:LTTS", "MPHASIS.NS":"NSE:MPHASIS", "PERSISTENT.NS":"NSE:PERSISTENT", "POLYCAB.NS":"NSE:POLYCAB", "TATAELXSI.NS":"NSE:TATAELXSI",
+  "AIXA.DE":"XETR:AIXA", "BOSS.DE":"XETR:BOSS", "DUE.DE":"XETR:DUE", "EVK.DE":"XETR:EVK", "FRA.DE":"XETR:FRA", "GXI.DE":"XETR:GXI", "HFG.DE":"XETR:HFG", "KGX.DE":"XETR:KGX", "LHA.DE":"XETR:LHA", "NDA.DE":"XETR:NDA", "NEM.DE":"XETR:NEM", "PSM.DE":"XETR:PSM", "PUM.DE":"XETR:PUM", "RHM.DE":"XETR:RHM", "SDF.DE":"XETR:SDF", "SY1.DE":"XETR:SY1", "WCH.DE":"XETR:WCH", "ZAL.DE":"XETR:ZAL",
+  "AKE.PA":"EURONEXT:AKE", "ALO.PA":"EURONEXT:ALO", "BEN.PA":"EURONEXT:BEN", "ERF.PA":"EURONEXT:ERF", "ML.PA":"EURONEXT:ML", "RCO.PA":"EURONEXT:RCO", "SESG.PA":"EURONEXT:SESG", "UBI.PA":"EURONEXT:UBI", "VLA.PA":"EURONEXT:VLA",
+  "AMG.AS":"EURONEXT:AMG", "ARCAD.AS":"EURONEXT:ARCAD", "BESI.AS":"EURONEXT:BESI", "FUR.AS":"EURONEXT:FUR",
+  "BMED.MI":"MIL:BMED", "IG.MI":"MIL:IG", "LDO.MI":"MIL:LDO", "PIRC.MI":"MIL:PIRC",
+  "CIE.MC":"BME:CIE", "GEST.MC":"BME:GEST", "MAP.MC":"BME:MAP", "SCYR.MC":"BME:SCYR",
+  "BAB.L":"LSE:BAB", "BME.L":"LSE:BME", "CNA.L":"LSE:CNA", "EZJ.L":"LSE:EZJ", "HWDN.L":"LSE:HWDN", "IMI.L":"LSE:IMI", "ITV.L":"LSE:ITV", "MRO.L":"LSE:MRO", "QQ.L":"LSE:QQ", "WEIR.L":"LSE:WEIR",
+  "BARN.SW":"SIX:BARN", "GALE.SW":"SIX:GALE", "SOON.SW":"SIX:SOON", "TEMN.SW":"SIX:TEMN"
 };
-const YAHOO_TO_TV_SUFFIX = [[".PA","EURONEXT:"],[".AS","EURONEXT:"],[".BR","EURONEXT:"],[".LS","EURONEXT:"],[".L","LSE:"],[".DE","XETR:"],[".F","FWB:"],[".MI","MIL:"],[".MC","BME:"],[".SW","SIX:"],[".ST","OMXSTO:"],[".CO","OMXCOP:"],[".OL","OSL:"],[".HE","OMXHEX:"],[".HK","HKEX:"],[".T","TSE:"],[".KS","KRX:"],[".KQ","KOSDAQ:"],[".SS","SSE:"],[".SZ","SZSE:"]];
+const SUFFIX_EXCHANGES = [[".KS","KRX:"],[".HK","HKEX:"],[".TW","TWSE:"],[".T","TSE:"],[".AX","ASX:"],[".NS","NSE:"],[".DE","XETR:"],[".PA","EURONEXT:"],[".AS","EURONEXT:"],[".MI","MIL:"],[".MC","BME:"],[".L","LSE:"],[".SW","SIX:"],[".BR","EURONEXT:"],[".LS","EURONEXT:"],[".CO","OMXCOP:"],[".OL","OSL:"],[".HE","OMXHEX:"]];
 const TF_TO_TV_INTERVAL = {"30m":"30", "1h":"60", "4h":"240"};
-let curTab = "open";
-let allRows = [];
-let visibleRows = [];
-let selectedKey = "";
+let curTab = "open", allRows = [], visibleRows = [], selectedKey = "";
 const filters = {market:"", tf:"", status:""};
-
-function fmt(v){return (v==null||v==="") ? "—" : Number(v).toLocaleString("en-US",{maximumFractionDigits:2});}
+function fmt(v){return (v==null||v==="") ? "-" : Number(v).toLocaleString("en-US",{maximumFractionDigits:2});}
 function rowKey(r){return String(r.id || r.signal_no || "") + "_" + String(r.ticker || "") + "_" + String(r.signal_time || r.created_at || "");}
-function timeAgo(ts){
-  if(!ts) return "";
-  const d = new Date(ts), diff = (Date.now() - d.getTime()) / 1000;
-  if(diff < 3600) return Math.max(1, Math.floor(diff/60)) + " daqiqa";
-  if(diff < 86400) return Math.floor(diff/3600) + " soat";
-  return Math.floor(diff/86400) + " kun";
-}
+function timeAgo(ts){if(!ts)return "";const d=new Date(ts),diff=(Date.now()-d.getTime())/1000;if(diff<3600)return Math.max(1,Math.floor(diff/60))+" daqiqa";if(diff<86400)return Math.floor(diff/3600)+" soat";return Math.floor(diff/86400)+" kun";}
 function tvSymbol(ticker){
-  const raw = String(ticker || "").toUpperCase().trim();
+  const raw=String(ticker||"").toUpperCase().trim();
   if(!raw) return "";
   if(raw.includes(":")) return raw;
   if(TV_SYMBOLS[raw]) return TV_SYMBOLS[raw];
-  for(const [suffix, exchange] of YAHOO_TO_TV_SUFFIX){
-    if(raw.endsWith(suffix)) return exchange + raw.slice(0, -suffix.length);
+  for(const [suffix,exchange] of SUFFIX_EXCHANGES){
+    if(raw.endsWith(suffix)){
+      let base=raw.slice(0,-suffix.length);
+      if(suffix===".HK") base=String(Number(base));
+      return exchange+base;
+    }
   }
-  if(/^[A-Z]{1,5}$/.test(raw)) return "NASDAQ:" + raw;
+  if(/^[A-Z]{1,5}$/.test(raw)) return TV_SYMBOLS[raw] || "NASDAQ:"+raw;
   return "";
 }
-function chartUrl(symbol, interval){
-  const params = new URLSearchParams({frameElementId:"altin_turon_tv_chart",symbol,interval,hidetoptoolbar:"0",hidesidetoolbar:"1",symboledit:"1",saveimage:"0",toolbarbg:"101B33",studies:"[]",theme:"dark",style:"1",timezone:"exchange",withdateranges:"1",hideideas:"1",locale:"en",enabled_features:"[]",disabled_features:"[]"});
-  return "https://s.tradingview.com/widgetembed/?" + params.toString();
-}
+function chartUrl(symbol, interval){const p=new URLSearchParams({frameElementId:"altin_turon_tv_chart",symbol,interval,hidetoptoolbar:"0",hidesidetoolbar:"1",symboledit:"1",saveimage:"0",toolbarbg:"101B33",studies:"[]",theme:"dark",style:"1",timezone:"exchange",withdateranges:"1",hideideas:"1",locale:"en",enabled_features:"[]",disabled_features:"[]"});return "https://s.tradingview.com/widgetembed/?"+p.toString();}
 function selectRow(key){
-  const row = visibleRows.find(r => rowKey(r) === key) || visibleRows[0];
-  if(!row){
-    selectedKey = "";
-    document.getElementById("cpTitle").textContent = "Grafik";
-    document.getElementById("cpSub").textContent = "Chapdagi pozitsiyani tanlang";
-    document.getElementById("cpTv").innerHTML = '<div class="placeholder">Signal tanlang.<br>Grafik shu yerda jonli ochiladi.</div>';
-    return;
-  }
-  selectedKey = rowKey(row);
-  const no = row.signal_no ? "#" + String(row.signal_no).padStart(5,"0") : "";
-  const tf = row.timeframe || "30m";
-  const symbol = tvSymbol(row.ticker);
-  document.getElementById("cpTitle").textContent = `${no} ${row.ticker || ""} · ${tf}`.trim();
-  document.getElementById("cpSub").textContent = `${STLBL[row.status] || row.status || "Ochiq"} · Entry ${fmt(row.entry)} · ${symbol || "symbol topilmadi"}`;
-  if(symbol){
-    document.getElementById("cpTv").innerHTML = `<iframe title="TradingView chart" allowtransparency="true" scrolling="no" allowfullscreen src="${chartUrl(symbol, TF_TO_TV_INTERVAL[tf] || "30")}"></iframe>`;
-  }else{
-    document.getElementById("cpTv").innerHTML = '<div class="placeholder">Bu ticker uchun TradingView symbol topilmadi.</div>';
-  }
-  document.querySelectorAll(".row").forEach(el => el.classList.toggle("active", el.dataset.key === selectedKey));
+  const row=visibleRows.find(r=>rowKey(r)===key)||visibleRows[0];
+  const tv=document.getElementById("cpTv");
+  if(!row){selectedKey="";document.getElementById("cpTitle").textContent="Grafik";document.getElementById("cpSub").textContent="Chapdagi pozitsiyani tanlang";tv.innerHTML='<div class="placeholder">Signal tanlang.<br>Grafik shu yerda jonli ochiladi.</div>';return;}
+  selectedKey=rowKey(row);const no=row.signal_no?"#"+String(row.signal_no).padStart(5,"0"):"";const tf=row.timeframe||"30m";const symbol=tvSymbol(row.ticker);
+  document.getElementById("cpTitle").textContent=`${no} ${row.ticker||""} · ${tf}`.trim();
+  document.getElementById("cpSub").textContent=`${STLBL[row.status]||row.status||"Ochiq"} · Entry ${fmt(row.entry)} · ${symbol||"symbol topilmadi"}`;
+  tv.innerHTML=symbol?`<iframe title="TradingView chart" allowtransparency="true" scrolling="no" allowfullscreen src="${chartUrl(symbol,TF_TO_TV_INTERVAL[tf]||"30")}"></iframe>`:'<div class="placeholder">Bu ticker uchun TradingView symbol topilmadi.</div>';
+  document.querySelectorAll(".row").forEach(el=>el.classList.toggle("active",el.dataset.key===selectedKey));
 }
-function renderStats(rows){
-  document.getElementById("stOpen").textContent = rows.filter(r => r.status === "open").length;
-  document.getElementById("stTotal").textContent = rows.length;
-}
-function baseRows(){
-  let rows = allRows.slice();
-  if(curTab === "open") rows = rows.filter(r => r.status === "open");
-  if(curTab === "history") rows = rows.filter(r => r.status !== "open");
-  if(filters.market) rows = rows.filter(r => r.region === filters.market);
-  if(filters.tf) rows = rows.filter(r => r.timeframe === filters.tf);
-  if(curTab === "history" && filters.status) rows = rows.filter(r => r.status === filters.status);
-  return rows;
-}
+function renderStats(rows){document.getElementById("stOpen").textContent=rows.filter(r=>r.status==="open").length;document.getElementById("stTotal").textContent=rows.length;}
+function baseRows(){let rows=allRows.slice();if(curTab==="open")rows=rows.filter(r=>r.status==="open");if(curTab==="history")rows=rows.filter(r=>r.status!=="open");if(filters.market)rows=rows.filter(r=>r.region===filters.market);if(filters.tf)rows=rows.filter(r=>r.timeframe===filters.tf);if(curTab==="history"&&filters.status)rows=rows.filter(r=>r.status===filters.status);return rows;}
 function renderList(){
-  const list = document.getElementById("positionList");
-  visibleRows = baseRows();
-  document.getElementById("listTitle").textContent = curTab === "open" ? "Ochiq pozitsiyalar" : "History";
-  document.getElementById("listCount").textContent = visibleRows.length;
-  document.getElementById("fStatus").style.display = curTab === "history" ? "flex" : "none";
-  if(!visibleRows.length){
-    list.innerHTML = '<div class="empty">Bu bo‘limda signal yo‘q.<br>Filtrni o‘zgartiring yoki yangi signalni kuting.</div>';
-    selectRow("");
-    return;
-  }
-  list.innerHTML = visibleRows.map(r => {
-    const key = rowKey(r);
-    const no = r.signal_no ? "#" + String(r.signal_no).padStart(5,"0") : "";
-    const status = STLBL[r.status] || r.status || "Ochiq";
-    return `<button class="row${key === selectedKey ? " active" : ""}" data-key="${key}">
-      <div class="rowTop"><span class="no">${no}</span><span class="ticker">${r.ticker || ""}</span><span class="ago">${timeAgo(r.signal_time || r.created_at)}</span></div>
-      <div class="rowInfo"><span class="mini"><small>Entry</small><b>${fmt(r.entry)}</b></span><span class="mini"><small>Timeframe</small><b>${r.timeframe || "30m"}</b></span></div>
-      <span class="badge">${status}</span>
-    </button>`;
-  }).join("");
-  list.querySelectorAll(".row").forEach(btn => btn.addEventListener("click", () => selectRow(btn.dataset.key)));
-  selectRow(visibleRows.some(r => rowKey(r) === selectedKey) ? selectedKey : rowKey(visibleRows[0]));
+  const list=document.getElementById("positionList");visibleRows=baseRows();document.getElementById("listTitle").textContent=curTab==="open"?"Ochiq pozitsiyalar":"History";document.getElementById("listCount").textContent=visibleRows.length;document.getElementById("fStatus").style.display=curTab==="history"?"flex":"none";
+  if(!visibleRows.length){list.innerHTML='<div class="empty">Bu bo‘limda signal yo‘q.<br>Filtrni o‘zgartiring yoki yangi signalni kuting.</div>';selectRow("");return;}
+  list.innerHTML=visibleRows.map(r=>{const key=rowKey(r),no=r.signal_no?"#"+String(r.signal_no).padStart(5,"0"):"",status=STLBL[r.status]||r.status||"Ochiq",symbol=tvSymbol(r.ticker);return `<button class="row${key===selectedKey?" active":""}" data-key="${key}"><div class="rowTop"><span class="no">${no}</span><span class="ticker">${r.ticker||""}</span><span class="ago">${timeAgo(r.signal_time||r.created_at)}</span></div><div class="rowInfo"><span class="mini"><small>Entry</small><b>${fmt(r.entry)}</b></span><span class="mini"><small>TV symbol</small><b>${symbol||"topilmadi"}</b></span></div><span class="badge">${status}</span></button>`;}).join("");
+  list.querySelectorAll(".row").forEach(btn=>btn.addEventListener("click",()=>selectRow(btn.dataset.key)));selectRow(visibleRows.some(r=>rowKey(r)===selectedKey)?selectedKey:rowKey(visibleRows[0]));
 }
-async function load(){
-  try{
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-    const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
-    const {data} = await sb.from("signals").select("*").gte("created_at", weekAgo).order("created_at", {ascending:false}).limit(500);
-    allRows = data || [];
-    renderStats(allRows);
-    renderList();
-  }catch(e){
-    document.getElementById("positionList").innerHTML = '<div class="empty">Xato: '+(e.message || e)+'</div>';
-  }
-}
-function setTab(tab){
-  curTab = tab;
-  document.getElementById("tabOpen").classList.toggle("active", tab === "open");
-  document.getElementById("tabHistory").classList.toggle("active", tab === "history");
-  renderList();
-}
-function setupFilterGroup(groupId,key){
-  const group = document.getElementById(groupId);
-  group.querySelectorAll(".fbtn").forEach(btn => btn.addEventListener("click", () => {
-    group.querySelectorAll(".fbtn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    filters[key] = btn.dataset.v;
-    renderList();
-  }));
-}
-document.getElementById("tabOpen").addEventListener("click", () => setTab("open"));
-document.getElementById("tabHistory").addEventListener("click", () => setTab("history"));
-document.getElementById("refresh").addEventListener("click", load);
-setupFilterGroup("fMarket", "market");
-setupFilterGroup("fTf", "tf");
-setupFilterGroup("fStatus", "status");
-load();
-setInterval(load, 60000);
+async function load(){try{const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON);const weekAgo=new Date(Date.now()-7*86400000).toISOString();const {data}=await sb.from("signals").select("*").gte("created_at",weekAgo).order("created_at",{ascending:false}).limit(500);allRows=data||[];renderStats(allRows);renderList();}catch(e){document.getElementById("positionList").innerHTML='<div class="empty">Xato: '+(e.message||e)+'</div>';}}
+function setTab(tab){curTab=tab;document.getElementById("tabOpen").classList.toggle("active",tab==="open");document.getElementById("tabHistory").classList.toggle("active",tab==="history");renderList();}
+function setupFilterGroup(groupId,key){const group=document.getElementById(groupId);group.querySelectorAll(".fbtn").forEach(btn=>btn.addEventListener("click",()=>{group.querySelectorAll(".fbtn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");filters[key]=btn.dataset.v;renderList();}));}
+document.getElementById("tabOpen").addEventListener("click",()=>setTab("open"));document.getElementById("tabHistory").addEventListener("click",()=>setTab("history"));document.getElementById("refresh").addEventListener("click",load);setupFilterGroup("fMarket","market");setupFilterGroup("fTf","tf");setupFilterGroup("fStatus","status");load();setInterval(load,60000);
 </script>
 </body>
 </html>
