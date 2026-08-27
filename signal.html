@@ -18,7 +18,8 @@ button{font-family:inherit}
 .card:hover{background:rgba(255,255,255,0.14)!important}
 .tab.active{background:rgba(255,255,255,0.18)!important;color:#EFE6D0!important}
 .fbtn.active{background:rgba(22,160,168,0.32)!important;color:#EFE6D0!important;border-color:rgba(255,255,255,0.3)!important}
-.tvbox{height:min(62vh,520px);min-height:360px;width:100%}
+.tvbox{height:min(62vh,520px);min-height:360px;width:100%;background:#101B33}
+.tvbox iframe{display:block;width:100%;height:100%;border:0}
 @media(max-width:640px){.tvbox{height:420px;min-height:320px}}
 </style>
 </head>
@@ -110,7 +111,7 @@ const TV_SYMBOLS = {
   COIN:"NASDAQ:COIN", MARA:"NASDAQ:MARA", RIOT:"NASDAQ:RIOT", UPST:"NASDAQ:UPST", AFRM:"NASDAQ:AFRM",
   NVAX:"NASDAQ:NVAX", MRNA:"NASDAQ:MRNA", OCGN:"NASDAQ:OCGN", SAVA:"NASDAQ:SAVA", DKNG:"NASDAQ:DKNG",
   CVNA:"NYSE:CVNA", SPCE:"NYSE:SPCE", AI:"NYSE:AI",
-  "ML.PA":"EURONEXT:ML", "FUR.AS":"EURONEXT:FUR"
+  "ML.PA":"EURONEXT:ML", "FUR.AS":"EURONEXT:FUR", "CNA.L":"LSE:CNA"
 };
 const YAHOO_TO_TV_SUFFIX = [
   [".PA", "EURONEXT:"], [".AS", "EURONEXT:"], [".BR", "EURONEXT:"], [".LS", "EURONEXT:"],
@@ -129,7 +130,7 @@ function timeAgo(ts){
 }
 function tvSymbol(ticker){
   const raw=String(ticker||"").toUpperCase().trim();
-  if(!raw) return "NASDAQ:AAPL";
+  if(!raw) return "";
   if(raw.includes(":")) return raw;
   if(TV_SYMBOLS[raw]) return TV_SYMBOLS[raw];
   for(const pair of YAHOO_TO_TV_SUFFIX){
@@ -141,32 +142,33 @@ function tvSymbol(ticker){
 function showTradingView(ticker,title,timeframe){
   const panel=document.getElementById("chartPanel");
   const holder=document.getElementById("cpTv");
-  holder.innerHTML='<div class="tradingview-widget-container" style="height:100%;width:100%"><div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%"></div></div>';
+  const symbol=tvSymbol(ticker);
+  const interval=TF_TO_TV_INTERVAL[timeframe] || "30";
   document.getElementById("cpTitle").textContent=title||ticker||"Grafik";
-  const script=document.createElement("script");
-  script.type="text/javascript";
-  script.async=true;
-  script.src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
-  script.innerHTML=JSON.stringify({
-    autosize:true,
-    symbol:tvSymbol(ticker),
-    interval:TF_TO_TV_INTERVAL[timeframe] || "30",
-    timezone:"exchange",
-    theme:"dark",
-    style:"1",
-    locale:"en",
-    backgroundColor:"#101B33",
-    gridColor:"rgba(239,230,208,0.08)",
-    hide_top_toolbar:false,
-    hide_side_toolbar:true,
-    hide_legend:false,
-    hide_volume:false,
-    allow_symbol_change:true,
-    save_image:false,
-    calendar:false,
-    support_host:"https://www.tradingview.com"
-  });
-  holder.firstChild.appendChild(script);
+  if(!symbol){
+    holder.innerHTML='<div style="height:100%;display:grid;place-items:center;color:rgba(239,230,208,.72);font-size:15px">Grafik uchun ticker topilmadi.</div>';
+  }else{
+    const params=new URLSearchParams({
+      frameElementId:"altin_turon_tv_chart",
+      symbol:symbol,
+      interval:interval,
+      hidetoptoolbar:"0",
+      hidesidetoolbar:"1",
+      symboledit:"1",
+      saveimage:"0",
+      toolbarbg:"101B33",
+      studies:"[]",
+      theme:"dark",
+      style:"1",
+      timezone:"exchange",
+      withdateranges:"1",
+      hideideas:"1",
+      locale:"en",
+      enabled_features:"[]",
+      disabled_features:"[]"
+    });
+    holder.innerHTML='<iframe title="TradingView chart" allowtransparency="true" scrolling="no" allowfullscreen src="https://s.tradingview.com/widgetembed/?'+params.toString()+'"></iframe>';
+  }
   panel.style.display="block";
   window.scrollTo({top:0,behavior:"smooth"});
 }
