@@ -13,11 +13,13 @@ html,body{margin:0;padding:0;background:#101B33;-webkit-font-smoothing:antialias
 *{box-sizing:border-box}
 button{font-family:inherit}
 @keyframes atFade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@keyframes atPulse{0%,100%{opacity:.55}50%{opacity:1}}
+.fbtn{padding:6px 12px;border-radius:11px;cursor:pointer;font-size:12.5px;background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.18);color:rgba(239,230,208,.7);transition:background .2s}
 .fbtn:hover{background:rgba(255,255,255,0.14)}
 .card:hover{background:rgba(255,255,255,0.14)!important}
 .tab.active{background:rgba(255,255,255,0.18)!important;color:#EFE6D0!important}
 .fbtn.active{background:rgba(22,160,168,0.32)!important;color:#EFE6D0!important;border-color:rgba(255,255,255,0.3)!important}
+.tvbox{height:min(62vh,520px);min-height:360px;width:100%}
+@media(max-width:640px){.tvbox{height:420px;min-height:320px}}
 </style>
 </head>
 <body>
@@ -29,7 +31,6 @@ button{font-family:inherit}
 
 <div style="position:relative;max-width:1120px;margin:0 auto;padding:clamp(18px,3vw,34px) clamp(16px,3vw,32px) 64px">
 
-  <!-- HEADER -->
   <div style="display:flex;align-items:center;gap:14px;margin-bottom:24px;flex-wrap:wrap">
     <button onclick="location.href='index.html'" style="width:42px;height:42px;flex:none;display:grid;place-items:center;border-radius:14px;cursor:pointer;background:rgba(255,255,255,0.10);border:0.5px solid rgba(255,255,255,0.28);box-shadow:inset 0 1px 0 rgba(255,255,255,0.24);color:#EFE6D0">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M20 12H5M11 6l-6 6 6 6"></path></svg>
@@ -38,38 +39,34 @@ button{font-family:inherit}
     <button id="refresh" style="margin-left:auto;padding:9px 15px;border-radius:12px;cursor:pointer;font-size:13px;background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.20);color:rgba(239,230,208,.8)">↻ Yangilash</button>
   </div>
 
-  <!-- STATS -->
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:clamp(10px,1.6vw,16px);margin-bottom:clamp(14px,2vw,20px)">
-    <div class="stat" style="padding:16px 18px;border-radius:20px;background:rgba(255,255,255,0.10);border:0.5px solid rgba(255,255,255,0.28);box-shadow:inset 0 1px 0 rgba(255,255,255,0.24), 0 10px 34px rgba(0,0,0,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)">
+    <div style="padding:16px 18px;border-radius:20px;background:rgba(255,255,255,0.10);border:0.5px solid rgba(255,255,255,0.28);box-shadow:inset 0 1px 0 rgba(255,255,255,0.24), 0 10px 34px rgba(0,0,0,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)">
       <p style="margin:0 0 7px;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(239,230,208,.5)">Ochiq savdolar</p>
       <p id="stOpen" style="margin:0;font-family:Marcellus,serif;font-size:clamp(21px,3vw,28px)">—</p>
     </div>
-    <div class="stat" style="padding:16px 18px;border-radius:20px;background:rgba(255,255,255,0.10);border:0.5px solid rgba(255,255,255,0.28);box-shadow:inset 0 1px 0 rgba(255,255,255,0.24), 0 10px 34px rgba(0,0,0,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)">
+    <div style="padding:16px 18px;border-radius:20px;background:rgba(255,255,255,0.10);border:0.5px solid rgba(255,255,255,0.28);box-shadow:inset 0 1px 0 rgba(255,255,255,0.24), 0 10px 34px rgba(0,0,0,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)">
       <p style="margin:0 0 7px;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(239,230,208,.5)">Profit</p>
       <p style="margin:0;font-family:Marcellus,serif;font-size:clamp(21px,3vw,28px);color:#8FD9DC">87%</p>
     </div>
-    <div class="stat" style="padding:16px 18px;border-radius:20px;background:rgba(255,255,255,0.10);border:0.5px solid rgba(255,255,255,0.28);box-shadow:inset 0 1px 0 rgba(255,255,255,0.24), 0 10px 34px rgba(0,0,0,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)">
+    <div style="padding:16px 18px;border-radius:20px;background:rgba(255,255,255,0.10);border:0.5px solid rgba(255,255,255,0.28);box-shadow:inset 0 1px 0 rgba(255,255,255,0.24), 0 10px 34px rgba(0,0,0,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)">
       <p style="margin:0 0 7px;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(239,230,208,.5)">Jami signal</p>
       <p id="stTotal" style="margin:0;font-family:Marcellus,serif;font-size:clamp(21px,3vw,28px)">—</p>
     </div>
   </div>
 
-  <!-- CHART PANEL (signal tanlansa) -->
   <div id="chartPanel" style="display:none;margin-bottom:18px;border-radius:22px;overflow:hidden;background:rgba(255,255,255,0.10);border:0.5px solid rgba(255,255,255,0.28);box-shadow:inset 0 1px 0 rgba(255,255,255,0.24), 0 14px 44px rgba(0,0,0,.26);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)">
     <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:0.5px solid rgba(255,255,255,0.14)">
       <span id="cpTitle" style="font-family:Marcellus,serif;font-size:17px;letter-spacing:.03em">—</span>
       <button id="cpClose" style="width:30px;height:30px;border-radius:9px;cursor:pointer;background:rgba(255,255,255,0.08);border:0.5px solid rgba(255,255,255,0.2);color:#EFE6D0;font-size:14px">✕</button>
     </div>
-    <img id="cpImg" src="" alt="grafik" style="width:100%;display:block">
+    <div id="cpTv" class="tvbox"></div>
   </div>
 
-  <!-- TABS -->
   <div style="display:flex;gap:8px;margin-bottom:4px">
     <button class="tab active" id="tabOpen" style="padding:9px 16px;border-radius:14px;cursor:pointer;font-size:13.5px;background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.20);color:rgba(239,230,208,.7);backdrop-filter:blur(12px)">Ochiq</button>
     <button class="tab" id="tabHistory" style="padding:9px 16px;border-radius:14px;cursor:pointer;font-size:13.5px;background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.20);color:rgba(239,230,208,.7);backdrop-filter:blur(12px)">History (1 hafta)</button>
   </div>
 
-  <!-- FILTERS -->
   <div style="display:flex;flex-wrap:wrap;gap:14px 20px;margin:14px 0 6px;padding:14px 16px;border-radius:18px;background:rgba(255,255,255,0.06);border:0.5px solid rgba(255,255,255,0.16)">
     <div class="fgroup" id="fMarket" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
       <span style="font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(239,230,208,.5);margin-right:2px">Bozor</span>
@@ -82,8 +79,6 @@ button{font-family:inherit}
       <span style="font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(239,230,208,.5);margin-right:2px">Timeframe</span>
       <button class="fbtn active" data-v="">Hammasi</button>
       <button class="fbtn" data-v="30m">30m</button>
-      <button class="fbtn" data-v="1h">1h</button>
-      <button class="fbtn" data-v="4h">4h</button>
     </div>
     <div class="fgroup" id="fStatus" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
       <span style="font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(239,230,208,.5);margin-right:2px">Natija</span>
@@ -103,15 +98,19 @@ button{font-family:inherit}
 </div>
 </div>
 
-<style>
-.fbtn{padding:6px 12px;border-radius:11px;cursor:pointer;font-size:12.5px;background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.18);color:rgba(239,230,208,.7);transition:background .2s}
-</style>
-
 <script>
 const SUPABASE_URL  = "https://cewwbrozmspimmegbhds.supabase.co";
 const SUPABASE_ANON = "sb_publishable_pAuy5WbKAKo-REkCuoxmfA_5Zy3uavd";
 
 const STLBL = {open:"Ochiq", tp:"Foyda oldi", sl:"Stop", closed:"Yopilgan"};
+const TV_SYMBOLS = {
+  GME:"NYSE:GME", AMC:"NYSE:AMC", KOSS:"NASDAQ:KOSS", CLOV:"NASDAQ:CLOV", RIVN:"NASDAQ:RIVN",
+  LCID:"NASDAQ:LCID", NKLA:"NASDAQ:NKLA", CHPT:"NYSE:CHPT", PLUG:"NASDAQ:PLUG", FCEL:"NASDAQ:FCEL",
+  RUN:"NASDAQ:RUN", PLTR:"NASDAQ:PLTR", SOFI:"NASDAQ:SOFI", HOOD:"NASDAQ:HOOD", RBLX:"NYSE:RBLX",
+  COIN:"NASDAQ:COIN", MARA:"NASDAQ:MARA", RIOT:"NASDAQ:RIOT", UPST:"NASDAQ:UPST", AFRM:"NASDAQ:AFRM",
+  NVAX:"NASDAQ:NVAX", MRNA:"NASDAQ:MRNA", OCGN:"NASDAQ:OCGN", SAVA:"NASDAQ:SAVA", DKNG:"NASDAQ:DKNG",
+  CVNA:"NYSE:CVNA", SPCE:"NYSE:SPCE", AI:"NYSE:AI"
+};
 function fmt(v){ return (v==null||v==="")?"—":Number(v).toLocaleString("en-US",{maximumFractionDigits:2}); }
 function timeAgo(ts){
   if(!ts) return "";
@@ -120,13 +119,43 @@ function timeAgo(ts){
   if(diff<86400) return Math.floor(diff/3600)+" soat oldin";
   return Math.floor(diff/86400)+" kun oldin";
 }
-
-function statCard(v){ return v; }
+function tvSymbol(ticker){ return TV_SYMBOLS[String(ticker||"").toUpperCase()] || ("NASDAQ:"+String(ticker||"").toUpperCase()); }
+function showTradingView(ticker,title){
+  const panel=document.getElementById("chartPanel");
+  const holder=document.getElementById("cpTv");
+  holder.innerHTML='<div class="tradingview-widget-container" style="height:100%;width:100%"><div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%"></div></div>';
+  document.getElementById("cpTitle").textContent=title||ticker||"Grafik";
+  const script=document.createElement("script");
+  script.type="text/javascript";
+  script.async=true;
+  script.src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
+  script.innerHTML=JSON.stringify({
+    autosize:true,
+    symbol:tvSymbol(ticker),
+    interval:"30",
+    timezone:"exchange",
+    theme:"dark",
+    style:"1",
+    locale:"en",
+    backgroundColor:"#101B33",
+    gridColor:"rgba(239,230,208,0.08)",
+    hide_top_toolbar:false,
+    hide_side_toolbar:true,
+    hide_legend:false,
+    hide_volume:false,
+    allow_symbol_change:true,
+    save_image:false,
+    calendar:false,
+    support_host:"https://www.tradingview.com"
+  });
+  holder.firstChild.appendChild(script);
+  panel.style.display="block";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
 function renderStats(rows){
   document.getElementById("stOpen").textContent = rows.filter(r=>r.status==="open").length;
   document.getElementById("stTotal").textContent = rows.length;
 }
-
 function renderCards(rows){
   const c=document.getElementById("content");
   if(!rows.length){
@@ -137,12 +166,13 @@ function renderCards(rows){
     const no = r.signal_no?("#"+String(r.signal_no).padStart(5,"0")):"";
     const stC = r.status==="tp"?"#8FD9DC":r.status==="sl"?"rgba(239,230,208,.7)":"#EFE6D0";
     const stB = r.status==="tp"?"rgba(143,217,220,.5)":r.status==="sl"?"rgba(239,230,208,.35)":"rgba(255,255,255,0.24)";
-    return `<div class="card" ${r.chart_url?`data-chart="${r.chart_url}" data-title="${no} ${r.ticker||""} · ${r.timeframe||""}"`:""} style="border-radius:22px;background:rgba(255,255,255,0.10);border:0.5px solid rgba(255,255,255,0.28);box-shadow:inset 0 1px 0 rgba(255,255,255,0.24), 0 10px 34px rgba(0,0,0,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:clamp(14px,2vw,18px);cursor:pointer;transition:background .25s">
+    const title = `${no} ${r.ticker||""} · ${r.timeframe||"30m"}`;
+    return `<div class="card" data-ticker="${r.ticker||""}" data-title="${title}" style="border-radius:22px;background:rgba(255,255,255,0.10);border:0.5px solid rgba(255,255,255,0.28);box-shadow:inset 0 1px 0 rgba(255,255,255,0.24), 0 10px 34px rgba(0,0,0,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:clamp(14px,2vw,18px);cursor:pointer;transition:background .25s">
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px">
         <span style="font-size:12px;color:rgba(239,230,208,.55);font-variant-numeric:tabular-nums">${no}</span>
         <b style="font-weight:500;font-size:16px;letter-spacing:.03em">${r.ticker||""}</b>
         ${r.region?`<i style="font-style:normal;font-size:10.5px;letter-spacing:.1em;padding:3px 8px;border-radius:8px;border:0.5px solid rgba(255,255,255,0.24);background:rgba(255,255,255,0.07);color:rgba(239,230,208,.8)">${r.region}</i>`:""}
-        <i style="font-style:normal;font-size:11px;color:rgba(239,230,208,.55)">${r.timeframe||""}</i>
+        <i style="font-style:normal;font-size:11px;color:rgba(239,230,208,.55)">${r.timeframe||"30m"}</i>
         <span style="margin-left:auto;font-size:11px;color:rgba(239,230,208,.45)">${timeAgo(r.signal_time||r.created_at)}</span>
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px">
@@ -152,28 +182,18 @@ function renderCards(rows){
       </div>
       <div style="margin-top:12px;display:flex;align-items:center;gap:10px">
         <span style="font-size:11px;letter-spacing:.1em;padding:4px 11px;border-radius:9px;border:0.5px solid ${stB};color:${stC}">${STLBL[r.status]||r.status||"Ochiq"}</span>
-        ${r.chart_url?`<span style="font-size:11px;color:rgba(239,230,208,.4)">grafik uchun bosing</span>`:""}
+        <span style="font-size:11px;color:rgba(239,230,208,.4)">jonli grafik uchun bosing</span>
       </div>
-      ${r.chart_url?`<img src="${r.chart_url}" alt="grafik" loading="lazy" style="width:100%;max-width:160px;display:block;margin-top:14px;border-radius:10px;border:0.5px solid rgba(255,255,255,0.18)">`:""}
     </div>`;
   }).join("")+'</div>';
-
   c.querySelectorAll(".card").forEach(card=>{
-    card.addEventListener("click",()=>{
-      const url=card.getAttribute("data-chart");
-      if(!url) return;
-      document.getElementById("cpImg").src=url;
-      document.getElementById("cpTitle").textContent=card.getAttribute("data-title")||"Grafik";
-      document.getElementById("chartPanel").style.display="block";
-      window.scrollTo({top:0,behavior:"smooth"});
-    });
+    card.addEventListener("click",()=>showTradingView(card.getAttribute("data-ticker"),card.getAttribute("data-title")));
   });
 }
 
 let curTab="open";
 let allRows=[];
 const filters={market:"", tf:"", status:""};
-
 function applyFilters(){
   let rows=allRows.slice();
   if(curTab==="open" && !filters.status) rows=rows.filter(r=>r.status==="open");
@@ -182,17 +202,11 @@ function applyFilters(){
   if(filters.status) rows=rows.filter(r=>r.status===filters.status);
   renderCards(rows);
 }
-
 async function load(){
-  if(SUPABASE_URL.startsWith("SIZNING")||SUPABASE_ANON.startsWith("SIZNING")){
-    document.getElementById("content").innerHTML='<div style="text-align:center;padding:50px 20px;color:rgba(239,230,208,.7)">Supabase hali ulanmagan.</div>';
-    return;
-  }
   try{
     const sb=window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
     const weekAgo=new Date(Date.now()-7*86400000).toISOString();
-    const {data:all}=await sb.from("signals").select("*").gte("created_at",weekAgo)
-      .order("created_at",{ascending:false}).limit(500);
+    const {data:all}=await sb.from("signals").select("*").gte("created_at",weekAgo).order("created_at",{ascending:false}).limit(500);
     allRows=all||[];
     renderStats(allRows);
     applyFilters();
@@ -200,17 +214,12 @@ async function load(){
     document.getElementById("content").innerHTML='<div style="text-align:center;padding:50px 20px;color:rgba(239,230,208,.7)">Xato: '+(e.message||e)+'</div>';
   }
 }
-
 function setTab(t){
   curTab=t;
   document.getElementById("tabOpen").classList.toggle("active",t==="open");
   document.getElementById("tabHistory").classList.toggle("active",t==="history");
   applyFilters();
 }
-document.getElementById("tabOpen").addEventListener("click",()=>setTab("open"));
-document.getElementById("tabHistory").addEventListener("click",()=>setTab("history"));
-document.getElementById("refresh").addEventListener("click",load);
-
 function setupFilterGroup(groupId,key){
   const g=document.getElementById(groupId);
   g.querySelectorAll(".fbtn").forEach(btn=>{
@@ -222,14 +231,16 @@ function setupFilterGroup(groupId,key){
     });
   });
 }
+document.getElementById("tabOpen").addEventListener("click",()=>setTab("open"));
+document.getElementById("tabHistory").addEventListener("click",()=>setTab("history"));
+document.getElementById("refresh").addEventListener("click",load);
 setupFilterGroup("fMarket","market");
 setupFilterGroup("fTf","tf");
 setupFilterGroup("fStatus","status");
-
 document.getElementById("cpClose").addEventListener("click",()=>{
   document.getElementById("chartPanel").style.display="none";
+  document.getElementById("cpTv").innerHTML="";
 });
-
 load();
 setInterval(load,60000);
 </script>
