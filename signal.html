@@ -12,257 +12,209 @@
 html,body{margin:0;padding:0;background:#101B33;-webkit-font-smoothing:antialiased}
 *{box-sizing:border-box}
 button{font-family:inherit}
-@keyframes atFade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.fbtn{padding:6px 12px;border-radius:11px;cursor:pointer;font-size:12.5px;background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.18);color:rgba(239,230,208,.7);transition:background .2s}
-.fbtn:hover{background:rgba(255,255,255,0.14)}
-.card:hover{background:rgba(255,255,255,0.14)!important}
-.tab.active{background:rgba(255,255,255,0.18)!important;color:#EFE6D0!important}
-.fbtn.active{background:rgba(22,160,168,0.32)!important;color:#EFE6D0!important;border-color:rgba(255,255,255,0.3)!important}
-.tvbox{height:min(62vh,520px);min-height:360px;width:100%;background:#101B33}
-.tvbox iframe{display:block;width:100%;height:100%;border:0}
-@media(max-width:640px){.tvbox{height:420px;min-height:320px}}
+body{font-family:Manrope,system-ui,sans-serif;color:#EFE6D0}
+.bg{position:fixed;inset:0;pointer-events:none;background:radial-gradient(90vw 70vh at 12% -10%,#0E5C63 0%,rgba(14,92,99,0) 62%),radial-gradient(70vw 60vh at 105% 8%,#16223F 0%,rgba(22,34,63,0) 60%),radial-gradient(80vw 70vh at 50% 115%,#0C4A50 0%,rgba(12,74,80,0) 65%),linear-gradient(180deg,#101B33 0%,#0d1729 100%)}
+.girih{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;opacity:.11}
+.veil{position:fixed;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(16,27,51,.35) 0%,rgba(13,23,41,.72) 100%)}
+.page{position:relative;max-width:1280px;margin:0 auto;padding:clamp(18px,3vw,34px) clamp(16px,3vw,32px) 64px}
+.header{display:flex;align-items:center;gap:14px;margin-bottom:22px;flex-wrap:wrap}
+.back,.refresh,.tab,.fbtn,.iconbtn{cursor:pointer;background:rgba(255,255,255,.07);border:.5px solid rgba(255,255,255,.20);color:rgba(239,230,208,.8)}
+.back{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.28);box-shadow:inset 0 1px 0 rgba(255,255,255,.24);color:#EFE6D0}
+h1{margin:0;font-family:Marcellus,serif;font-weight:400;font-size:clamp(22px,3.4vw,32px);letter-spacing:.02em}
+.refresh{margin-left:auto;padding:9px 15px;border-radius:12px;font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(10px,1.6vw,16px);margin-bottom:18px}
+.stat,.panel,.side{background:rgba(255,255,255,.10);border:.5px solid rgba(255,255,255,.28);box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 10px 34px rgba(0,0,0,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.stat{padding:16px 18px;border-radius:20px}.stat p{margin:0}.stat .label{margin-bottom:7px;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(239,230,208,.5)}.stat .value{font-family:Marcellus,serif;font-size:clamp(21px,3vw,28px)}
+.shell{display:grid;grid-template-columns:360px minmax(0,1fr);gap:16px;align-items:start}.side,.panel{border-radius:20px;overflow:hidden}.side{position:sticky;top:18px;max-height:calc(100vh - 36px);display:flex;flex-direction:column}.sideHead{padding:14px;border-bottom:.5px solid rgba(255,255,255,.14)}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}.tab{padding:9px 10px;border-radius:12px;font-size:13px}.tab.active,.fbtn.active{background:rgba(22,160,168,.32)!important;color:#EFE6D0!important;border-color:rgba(255,255,255,.3)!important}
+.filters{display:flex;flex-direction:column;gap:12px}.fgroup{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.fgroup span{width:100%;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(239,230,208,.5)}.fbtn{padding:6px 10px;border-radius:10px;font-size:12px}.fbtn:hover,.row:hover{background:rgba(255,255,255,.14)}
+.listMeta{display:flex;justify-content:space-between;gap:10px;padding:11px 14px;border-bottom:.5px solid rgba(255,255,255,.12);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(239,230,208,.46)}
+.list{overflow:auto;padding:8px;display:flex;flex-direction:column;gap:8px}.empty{padding:34px 18px;text-align:center;color:rgba(239,230,208,.62);line-height:1.55;font-size:14px}
+.row{width:100%;text-align:left;border:0;border-radius:14px;padding:12px;background:rgba(255,255,255,.06);color:#EFE6D0;transition:background .2s}.row.active{background:rgba(22,160,168,.26);outline:1px solid rgba(143,217,220,.42)}.rowTop{display:flex;align-items:center;gap:8px}.no{font-size:11px;color:rgba(239,230,208,.48);font-variant-numeric:tabular-nums}.ticker{font-size:16px;font-weight:600;letter-spacing:.02em}.ago{margin-left:auto;font-size:11px;color:rgba(239,230,208,.45)}.rowInfo{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.mini{padding:8px;border-radius:10px;background:rgba(255,255,255,.06);border:.5px solid rgba(255,255,255,.14)}.mini small{display:block;margin-bottom:2px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:rgba(239,230,208,.45)}.mini b{font-size:13px;font-weight:500;font-variant-numeric:tabular-nums}.badge{display:inline-flex;margin-top:10px;font-size:10.5px;letter-spacing:.1em;padding:4px 9px;border-radius:9px;border:.5px solid rgba(255,255,255,.2);color:rgba(239,230,208,.8)}
+.chartHead{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:14px 16px;border-bottom:.5px solid rgba(255,255,255,.14)}.chartTitle{font-family:Marcellus,serif;font-size:19px}.chartSub{font-size:12px;color:rgba(239,230,208,.52);margin-top:3px}.tvbox{height:calc(100vh - 250px);min-height:520px;width:100%;background:#101B33}.tvbox iframe{display:block;width:100%;height:100%;border:0}.placeholder{height:520px;display:grid;place-items:center;text-align:center;color:rgba(239,230,208,.62);line-height:1.6;padding:30px}
+footer{margin-top:52px;padding-top:20px;border-top:.5px solid rgba(255,255,255,.14);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:11.5px;letter-spacing:.1em;color:rgba(239,230,208,.42)}
+@media(max-width:900px){.stats{grid-template-columns:1fr}.shell{grid-template-columns:1fr}.side{position:relative;top:auto;max-height:none}.tvbox{height:440px;min-height:360px}.placeholder{height:360px}}
 </style>
 </head>
 <body>
-<div style="position:relative;min-height:100vh;background:#101B33;font-family:Manrope,system-ui,sans-serif;color:#EFE6D0;overflow:hidden">
-
-<div style="position:fixed;inset:0;pointer-events:none;background:radial-gradient(90vw 70vh at 12% -10%, #0E5C63 0%, rgba(14,92,99,0) 62%), radial-gradient(70vw 60vh at 105% 8%, #16223F 0%, rgba(22,34,63,0) 60%), radial-gradient(80vw 70vh at 50% 115%, #0C4A50 0%, rgba(12,74,80,0) 65%), linear-gradient(180deg,#101B33 0%,#0d1729 100%)"></div>
-<svg style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;opacity:.11" aria-hidden="true"><defs><pattern id="atGirih" width="96" height="96" patternUnits="userSpaceOnUse"><g fill="none" stroke="#EFE6D0" stroke-width="1"><rect x="24" y="24" width="48" height="48"></rect><rect x="24" y="24" width="48" height="48" transform="rotate(45 48 48)"></rect><circle cx="48" cy="48" r="10"></circle><path d="M0 48 L24 48 M72 48 L96 48 M48 0 L48 24 M48 72 L48 96"></path></g></pattern></defs><rect width="100%" height="100%" fill="url(#atGirih)"></rect></svg>
-<div style="position:fixed;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(16,27,51,.35) 0%,rgba(13,23,41,.72) 100%)"></div>
-
-<div style="position:relative;max-width:1120px;margin:0 auto;padding:clamp(18px,3vw,34px) clamp(16px,3vw,32px) 64px">
-
-  <div style="display:flex;align-items:center;gap:14px;margin-bottom:24px;flex-wrap:wrap">
-    <button onclick="location.href='index.html'" style="width:42px;height:42px;flex:none;display:grid;place-items:center;border-radius:14px;cursor:pointer;background:rgba(255,255,255,0.10);border:0.5px solid rgba(255,255,255,0.28);box-shadow:inset 0 1px 0 rgba(255,255,255,0.24);color:#EFE6D0">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M20 12H5M11 6l-6 6 6 6"></path></svg>
-    </button>
-    <h2 style="margin:0;font-family:Marcellus,serif;font-weight:400;font-size:clamp(22px,3.4vw,32px);letter-spacing:.02em">Investing</h2>
-    <button id="refresh" style="margin-left:auto;padding:9px 15px;border-radius:12px;cursor:pointer;font-size:13px;background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.20);color:rgba(239,230,208,.8)">↻ Yangilash</button>
+<div class="bg"></div>
+<svg class="girih" aria-hidden="true"><defs><pattern id="atGirih" width="96" height="96" patternUnits="userSpaceOnUse"><g fill="none" stroke="#EFE6D0" stroke-width="1"><rect x="24" y="24" width="48" height="48"></rect><rect x="24" y="24" width="48" height="48" transform="rotate(45 48 48)"></rect><circle cx="48" cy="48" r="10"></circle><path d="M0 48 L24 48 M72 48 L96 48 M48 0 L48 24 M48 72 L48 96"></path></g></pattern></defs><rect width="100%" height="100%" fill="url(#atGirih)"></rect></svg>
+<div class="veil"></div>
+<div class="page">
+  <div class="header">
+    <button class="back" onclick="location.href='index.html'" aria-label="Orqaga"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M20 12H5M11 6l-6 6 6 6"></path></svg></button>
+    <h1>Investing</h1>
+    <button id="refresh" class="refresh">↻ Yangilash</button>
   </div>
 
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:clamp(10px,1.6vw,16px);margin-bottom:clamp(14px,2vw,20px)">
-    <div style="padding:16px 18px;border-radius:20px;background:rgba(255,255,255,0.10);border:0.5px solid rgba(255,255,255,0.28);box-shadow:inset 0 1px 0 rgba(255,255,255,0.24), 0 10px 34px rgba(0,0,0,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)">
-      <p style="margin:0 0 7px;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(239,230,208,.5)">Ochiq savdolar</p>
-      <p id="stOpen" style="margin:0;font-family:Marcellus,serif;font-size:clamp(21px,3vw,28px)">—</p>
-    </div>
-    <div style="padding:16px 18px;border-radius:20px;background:rgba(255,255,255,0.10);border:0.5px solid rgba(255,255,255,0.28);box-shadow:inset 0 1px 0 rgba(255,255,255,0.24), 0 10px 34px rgba(0,0,0,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)">
-      <p style="margin:0 0 7px;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(239,230,208,.5)">Profit</p>
-      <p style="margin:0;font-family:Marcellus,serif;font-size:clamp(21px,3vw,28px);color:#8FD9DC">87%</p>
-    </div>
-    <div style="padding:16px 18px;border-radius:20px;background:rgba(255,255,255,0.10);border:0.5px solid rgba(255,255,255,0.28);box-shadow:inset 0 1px 0 rgba(255,255,255,0.24), 0 10px 34px rgba(0,0,0,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)">
-      <p style="margin:0 0 7px;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(239,230,208,.5)">Jami signal</p>
-      <p id="stTotal" style="margin:0;font-family:Marcellus,serif;font-size:clamp(21px,3vw,28px)">—</p>
-    </div>
+  <div class="stats">
+    <div class="stat"><p class="label">Ochiq savdolar</p><p id="stOpen" class="value">—</p></div>
+    <div class="stat"><p class="label">Profit</p><p class="value" style="color:#8FD9DC">87%</p></div>
+    <div class="stat"><p class="label">Jami signal</p><p id="stTotal" class="value">—</p></div>
   </div>
 
-  <div id="chartPanel" style="display:none;margin-bottom:18px;border-radius:22px;overflow:hidden;background:rgba(255,255,255,0.10);border:0.5px solid rgba(255,255,255,0.28);box-shadow:inset 0 1px 0 rgba(255,255,255,0.24), 0 14px 44px rgba(0,0,0,.26);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:0.5px solid rgba(255,255,255,0.14)">
-      <span id="cpTitle" style="font-family:Marcellus,serif;font-size:17px;letter-spacing:.03em">—</span>
-      <button id="cpClose" style="width:30px;height:30px;border-radius:9px;cursor:pointer;background:rgba(255,255,255,0.08);border:0.5px solid rgba(255,255,255,0.2);color:#EFE6D0;font-size:14px">✕</button>
-    </div>
-    <div id="cpTv" class="tvbox"></div>
+  <div class="shell">
+    <aside class="side">
+      <div class="sideHead">
+        <div class="tabs">
+          <button class="tab active" id="tabOpen">Ochiq</button>
+          <button class="tab" id="tabHistory">History</button>
+        </div>
+        <div class="filters">
+          <div class="fgroup" id="fMarket"><span>Bozor</span><button class="fbtn active" data-v="">Hammasi</button><button class="fbtn" data-v="AQSh">Amerika</button><button class="fbtn" data-v="Yevropa">Yevropa</button><button class="fbtn" data-v="Osiyo">Osiyo</button></div>
+          <div class="fgroup" id="fTf"><span>Timeframe</span><button class="fbtn active" data-v="">Hammasi</button><button class="fbtn" data-v="30m">30m</button><button class="fbtn" data-v="1h">1h</button><button class="fbtn" data-v="4h">4h</button></div>
+          <div class="fgroup" id="fStatus"><span>Natija</span><button class="fbtn active" data-v="">Hammasi</button><button class="fbtn" data-v="tp">TP</button><button class="fbtn" data-v="sl">SL</button></div>
+        </div>
+      </div>
+      <div class="listMeta"><span id="listTitle">Pozitsiyalar</span><span id="listCount">0</span></div>
+      <div id="positionList" class="list"><div class="empty">Yuklanmoqda...</div></div>
+    </aside>
+
+    <section class="panel">
+      <div class="chartHead">
+        <div><div id="cpTitle" class="chartTitle">Grafik</div><div id="cpSub" class="chartSub">Chapdagi pozitsiyani tanlang</div></div>
+      </div>
+      <div id="cpTv" class="tvbox"><div class="placeholder">Signal tanlang.<br>Grafik shu yerda jonli ochiladi.</div></div>
+    </section>
   </div>
 
-  <div style="display:flex;gap:8px;margin-bottom:4px">
-    <button class="tab active" id="tabOpen" style="padding:9px 16px;border-radius:14px;cursor:pointer;font-size:13.5px;background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.20);color:rgba(239,230,208,.7);backdrop-filter:blur(12px)">Ochiq</button>
-    <button class="tab" id="tabHistory" style="padding:9px 16px;border-radius:14px;cursor:pointer;font-size:13.5px;background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.20);color:rgba(239,230,208,.7);backdrop-filter:blur(12px)">History (1 hafta)</button>
-  </div>
-
-  <div style="display:flex;flex-wrap:wrap;gap:14px 20px;margin:14px 0 6px;padding:14px 16px;border-radius:18px;background:rgba(255,255,255,0.06);border:0.5px solid rgba(255,255,255,0.16)">
-    <div class="fgroup" id="fMarket" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-      <span style="font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(239,230,208,.5);margin-right:2px">Bozor</span>
-      <button class="fbtn active" data-v="">Hammasi</button>
-      <button class="fbtn" data-v="AQSh">Amerika</button>
-      <button class="fbtn" data-v="Yevropa">Yevropa</button>
-      <button class="fbtn" data-v="Osiyo">Osiyo</button>
-    </div>
-    <div class="fgroup" id="fTf" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-      <span style="font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(239,230,208,.5);margin-right:2px">Timeframe</span>
-      <button class="fbtn active" data-v="">Hammasi</button>
-      <button class="fbtn" data-v="30m">30m</button>
-    </div>
-    <div class="fgroup" id="fStatus" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-      <span style="font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(239,230,208,.5);margin-right:2px">Natija</span>
-      <button class="fbtn active" data-v="">Hammasi</button>
-      <button class="fbtn" data-v="open">Ochiq</button>
-      <button class="fbtn" data-v="tp">TP</button>
-      <button class="fbtn" data-v="sl">SL</button>
-    </div>
-  </div>
-
-  <div id="content"><div style="text-align:center;padding:50px 20px;color:rgba(239,230,208,.7);font-size:15px">Yuklanmoqda...</div></div>
-
-  <footer style="margin-top:52px;padding-top:20px;border-top:0.5px solid rgba(255,255,255,0.14);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:11.5px;letter-spacing:.1em;color:rgba(239,230,208,.42)">
-    <span>Altin Turon · Fintech</span>
-    <span>Tashkent · 2026</span>
-  </footer>
-</div>
+  <footer><span>Altin Turon · Fintech</span><span>Tashkent · 2026</span></footer>
 </div>
 
 <script>
-const SUPABASE_URL  = "https://cewwbrozmspimmegbhds.supabase.co";
+const SUPABASE_URL = "https://cewwbrozmspimmegbhds.supabase.co";
 const SUPABASE_ANON = "sb_publishable_pAuy5WbKAKo-REkCuoxmfA_5Zy3uavd";
-
 const STLBL = {open:"Ochiq", tp:"Foyda oldi", sl:"Stop", closed:"Yopilgan"};
 const TV_SYMBOLS = {
-  GME:"NYSE:GME", AMC:"NYSE:AMC", KOSS:"NASDAQ:KOSS", CLOV:"NASDAQ:CLOV", RIVN:"NASDAQ:RIVN",
-  LCID:"NASDAQ:LCID", NKLA:"NASDAQ:NKLA", CHPT:"NYSE:CHPT", PLUG:"NASDAQ:PLUG", FCEL:"NASDAQ:FCEL",
-  RUN:"NASDAQ:RUN", PLTR:"NASDAQ:PLTR", SOFI:"NASDAQ:SOFI", HOOD:"NASDAQ:HOOD", RBLX:"NYSE:RBLX",
-  COIN:"NASDAQ:COIN", MARA:"NASDAQ:MARA", RIOT:"NASDAQ:RIOT", UPST:"NASDAQ:UPST", AFRM:"NASDAQ:AFRM",
-  NVAX:"NASDAQ:NVAX", MRNA:"NASDAQ:MRNA", OCGN:"NASDAQ:OCGN", SAVA:"NASDAQ:SAVA", DKNG:"NASDAQ:DKNG",
-  CVNA:"NYSE:CVNA", SPCE:"NYSE:SPCE", AI:"NYSE:AI",
+  GME:"NYSE:GME", AMC:"NYSE:AMC", KOSS:"NASDAQ:KOSS", CLOV:"NASDAQ:CLOV", RIVN:"NASDAQ:RIVN", LCID:"NASDAQ:LCID", NKLA:"NASDAQ:NKLA", CHPT:"NYSE:CHPT", PLUG:"NASDAQ:PLUG", FCEL:"NASDAQ:FCEL", RUN:"NASDAQ:RUN", PLTR:"NASDAQ:PLTR", SOFI:"NASDAQ:SOFI", HOOD:"NASDAQ:HOOD", RBLX:"NYSE:RBLX", COIN:"NASDAQ:COIN", MARA:"NASDAQ:MARA", RIOT:"NASDAQ:RIOT", UPST:"NASDAQ:UPST", AFRM:"NASDAQ:AFRM", NVAX:"NASDAQ:NVAX", MRNA:"NASDAQ:MRNA", OCGN:"NASDAQ:OCGN", SAVA:"NASDAQ:SAVA", DKNG:"NASDAQ:DKNG", CVNA:"NYSE:CVNA", SPCE:"NYSE:SPCE", AI:"NYSE:AI",
   "ML.PA":"EURONEXT:ML", "FUR.AS":"EURONEXT:FUR", "CNA.L":"LSE:CNA"
 };
-const YAHOO_TO_TV_SUFFIX = [
-  [".PA", "EURONEXT:"], [".AS", "EURONEXT:"], [".BR", "EURONEXT:"], [".LS", "EURONEXT:"],
-  [".L", "LSE:"], [".DE", "XETR:"], [".F", "FWB:"], [".MI", "MIL:"], [".MC", "BME:"],
-  [".SW", "SIX:"], [".ST", "OMXSTO:"], [".CO", "OMXCOP:"], [".OL", "OSL:"], [".HE", "OMXHEX:"],
-  [".HK", "HKEX:"], [".T", "TSE:"], [".KS", "KRX:"], [".KQ", "KOSDAQ:"], [".SS", "SSE:"], [".SZ", "SZSE:"]
-];
+const YAHOO_TO_TV_SUFFIX = [[".PA","EURONEXT:"],[".AS","EURONEXT:"],[".BR","EURONEXT:"],[".LS","EURONEXT:"],[".L","LSE:"],[".DE","XETR:"],[".F","FWB:"],[".MI","MIL:"],[".MC","BME:"],[".SW","SIX:"],[".ST","OMXSTO:"],[".CO","OMXCOP:"],[".OL","OSL:"],[".HE","OMXHEX:"],[".HK","HKEX:"],[".T","TSE:"],[".KS","KRX:"],[".KQ","KOSDAQ:"],[".SS","SSE:"],[".SZ","SZSE:"]];
 const TF_TO_TV_INTERVAL = {"30m":"30", "1h":"60", "4h":"240"};
-function fmt(v){ return (v==null||v==="")?"—":Number(v).toLocaleString("en-US",{maximumFractionDigits:2}); }
+let curTab = "open";
+let allRows = [];
+let visibleRows = [];
+let selectedKey = "";
+const filters = {market:"", tf:"", status:""};
+
+function fmt(v){return (v==null||v==="") ? "—" : Number(v).toLocaleString("en-US",{maximumFractionDigits:2});}
+function rowKey(r){return String(r.id || r.signal_no || "") + "_" + String(r.ticker || "") + "_" + String(r.signal_time || r.created_at || "");}
 function timeAgo(ts){
   if(!ts) return "";
-  const d=new Date(ts), diff=(Date.now()-d.getTime())/1000;
-  if(diff<3600) return Math.floor(diff/60)+" daqiqa oldin";
-  if(diff<86400) return Math.floor(diff/3600)+" soat oldin";
-  return Math.floor(diff/86400)+" kun oldin";
+  const d = new Date(ts), diff = (Date.now() - d.getTime()) / 1000;
+  if(diff < 3600) return Math.max(1, Math.floor(diff/60)) + " daqiqa";
+  if(diff < 86400) return Math.floor(diff/3600) + " soat";
+  return Math.floor(diff/86400) + " kun";
 }
 function tvSymbol(ticker){
-  const raw=String(ticker||"").toUpperCase().trim();
+  const raw = String(ticker || "").toUpperCase().trim();
   if(!raw) return "";
   if(raw.includes(":")) return raw;
   if(TV_SYMBOLS[raw]) return TV_SYMBOLS[raw];
-  for(const pair of YAHOO_TO_TV_SUFFIX){
-    const suffix=pair[0], exchange=pair[1];
+  for(const [suffix, exchange] of YAHOO_TO_TV_SUFFIX){
     if(raw.endsWith(suffix)) return exchange + raw.slice(0, -suffix.length);
   }
-  return "NASDAQ:" + raw;
+  if(/^[A-Z]{1,5}$/.test(raw)) return "NASDAQ:" + raw;
+  return "";
 }
-function showTradingView(ticker,title,timeframe){
-  const panel=document.getElementById("chartPanel");
-  const holder=document.getElementById("cpTv");
-  const symbol=tvSymbol(ticker);
-  const interval=TF_TO_TV_INTERVAL[timeframe] || "30";
-  document.getElementById("cpTitle").textContent=title||ticker||"Grafik";
-  if(!symbol){
-    holder.innerHTML='<div style="height:100%;display:grid;place-items:center;color:rgba(239,230,208,.72);font-size:15px">Grafik uchun ticker topilmadi.</div>';
-  }else{
-    const params=new URLSearchParams({
-      frameElementId:"altin_turon_tv_chart",
-      symbol:symbol,
-      interval:interval,
-      hidetoptoolbar:"0",
-      hidesidetoolbar:"1",
-      symboledit:"1",
-      saveimage:"0",
-      toolbarbg:"101B33",
-      studies:"[]",
-      theme:"dark",
-      style:"1",
-      timezone:"exchange",
-      withdateranges:"1",
-      hideideas:"1",
-      locale:"en",
-      enabled_features:"[]",
-      disabled_features:"[]"
-    });
-    holder.innerHTML='<iframe title="TradingView chart" allowtransparency="true" scrolling="no" allowfullscreen src="https://s.tradingview.com/widgetembed/?'+params.toString()+'"></iframe>';
-  }
-  panel.style.display="block";
-  window.scrollTo({top:0,behavior:"smooth"});
+function chartUrl(symbol, interval){
+  const params = new URLSearchParams({frameElementId:"altin_turon_tv_chart",symbol,interval,hidetoptoolbar:"0",hidesidetoolbar:"1",symboledit:"1",saveimage:"0",toolbarbg:"101B33",studies:"[]",theme:"dark",style:"1",timezone:"exchange",withdateranges:"1",hideideas:"1",locale:"en",enabled_features:"[]",disabled_features:"[]"});
+  return "https://s.tradingview.com/widgetembed/?" + params.toString();
 }
-function renderStats(rows){
-  document.getElementById("stOpen").textContent = rows.filter(r=>r.status==="open").length;
-  document.getElementById("stTotal").textContent = rows.length;
-}
-function renderCards(rows){
-  const c=document.getElementById("content");
-  if(!rows.length){
-    c.innerHTML='<div style="text-align:center;padding:50px 20px;color:rgba(239,230,208,.7);font-size:15px;line-height:1.6">Signal topilmadi.<br>Filtrni o\'zgartiring yoki bot signal yuborganini kuting.</div>';
+function selectRow(key){
+  const row = visibleRows.find(r => rowKey(r) === key) || visibleRows[0];
+  if(!row){
+    selectedKey = "";
+    document.getElementById("cpTitle").textContent = "Grafik";
+    document.getElementById("cpSub").textContent = "Chapdagi pozitsiyani tanlang";
+    document.getElementById("cpTv").innerHTML = '<div class="placeholder">Signal tanlang.<br>Grafik shu yerda jonli ochiladi.</div>';
     return;
   }
-  c.innerHTML='<div style="display:flex;flex-direction:column;gap:12px">'+rows.map(r=>{
-    const no = r.signal_no?("#"+String(r.signal_no).padStart(5,"0")):"";
-    const stC = r.status==="tp"?"#8FD9DC":r.status==="sl"?"rgba(239,230,208,.7)":"#EFE6D0";
-    const stB = r.status==="tp"?"rgba(143,217,220,.5)":r.status==="sl"?"rgba(239,230,208,.35)":"rgba(255,255,255,0.24)";
-    const title = `${no} ${r.ticker||""} · ${r.timeframe||"30m"}`;
-    return `<div class="card" data-ticker="${r.ticker||""}" data-tf="${r.timeframe||"30m"}" data-title="${title}" style="border-radius:22px;background:rgba(255,255,255,0.10);border:0.5px solid rgba(255,255,255,0.28);box-shadow:inset 0 1px 0 rgba(255,255,255,0.24), 0 10px 34px rgba(0,0,0,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:clamp(14px,2vw,18px);cursor:pointer;transition:background .25s">
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px">
-        <span style="font-size:12px;color:rgba(239,230,208,.55);font-variant-numeric:tabular-nums">${no}</span>
-        <b style="font-weight:500;font-size:16px;letter-spacing:.03em">${r.ticker||""}</b>
-        ${r.region?`<i style="font-style:normal;font-size:10.5px;letter-spacing:.1em;padding:3px 8px;border-radius:8px;border:0.5px solid rgba(255,255,255,0.24);background:rgba(255,255,255,0.07);color:rgba(239,230,208,.8)">${r.region}</i>`:""}
-        <i style="font-style:normal;font-size:11px;color:rgba(239,230,208,.55)">${r.timeframe||"30m"}</i>
-        <span style="margin-left:auto;font-size:11px;color:rgba(239,230,208,.45)">${timeAgo(r.signal_time||r.created_at)}</span>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px">
-        <div style="padding:11px 13px;border-radius:14px;background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.18)"><p style="margin:0 0 4px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(239,230,208,.5)">Eng yaxshi narx</p><p style="margin:0;font-size:15px;font-variant-numeric:tabular-nums">${fmt(r.entry)}</p></div>
-        <div style="padding:11px 13px;border-radius:14px;background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.18)"><p style="margin:0 0 4px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(239,230,208,.5)">Kutilayotgan foyda</p><p style="margin:0;font-size:15px;font-variant-numeric:tabular-nums;color:#8FD9DC">${fmt(r.tp)}</p></div>
-        <div style="padding:11px 13px;border-radius:14px;background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.18)"><p style="margin:0 0 4px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(239,230,208,.5)">SL</p><p style="margin:0;font-size:15px;font-variant-numeric:tabular-nums;color:rgba(239,230,208,.75)">${fmt(r.sl)}</p></div>
-      </div>
-      <div style="margin-top:12px;display:flex;align-items:center;gap:10px">
-        <span style="font-size:11px;letter-spacing:.1em;padding:4px 11px;border-radius:9px;border:0.5px solid ${stB};color:${stC}">${STLBL[r.status]||r.status||"Ochiq"}</span>
-        <span style="font-size:11px;color:rgba(239,230,208,.4)">jonli grafik uchun bosing</span>
-      </div>
-    </div>`;
-  }).join("")+'</div>';
-  c.querySelectorAll(".card").forEach(card=>{
-    card.addEventListener("click",()=>showTradingView(card.getAttribute("data-ticker"),card.getAttribute("data-title"),card.getAttribute("data-tf")));
-  });
+  selectedKey = rowKey(row);
+  const no = row.signal_no ? "#" + String(row.signal_no).padStart(5,"0") : "";
+  const tf = row.timeframe || "30m";
+  const symbol = tvSymbol(row.ticker);
+  document.getElementById("cpTitle").textContent = `${no} ${row.ticker || ""} · ${tf}`.trim();
+  document.getElementById("cpSub").textContent = `${STLBL[row.status] || row.status || "Ochiq"} · Entry ${fmt(row.entry)} · ${symbol || "symbol topilmadi"}`;
+  if(symbol){
+    document.getElementById("cpTv").innerHTML = `<iframe title="TradingView chart" allowtransparency="true" scrolling="no" allowfullscreen src="${chartUrl(symbol, TF_TO_TV_INTERVAL[tf] || "30")}"></iframe>`;
+  }else{
+    document.getElementById("cpTv").innerHTML = '<div class="placeholder">Bu ticker uchun TradingView symbol topilmadi.</div>';
+  }
+  document.querySelectorAll(".row").forEach(el => el.classList.toggle("active", el.dataset.key === selectedKey));
 }
-
-let curTab="open";
-let allRows=[];
-const filters={market:"", tf:"", status:""};
-function applyFilters(){
-  let rows=allRows.slice();
-  if(curTab==="open" && !filters.status) rows=rows.filter(r=>r.status==="open");
-  if(filters.market) rows=rows.filter(r=>r.region===filters.market);
-  if(filters.tf) rows=rows.filter(r=>r.timeframe===filters.tf);
-  if(filters.status) rows=rows.filter(r=>r.status===filters.status);
-  renderCards(rows);
+function renderStats(rows){
+  document.getElementById("stOpen").textContent = rows.filter(r => r.status === "open").length;
+  document.getElementById("stTotal").textContent = rows.length;
+}
+function baseRows(){
+  let rows = allRows.slice();
+  if(curTab === "open") rows = rows.filter(r => r.status === "open");
+  if(curTab === "history") rows = rows.filter(r => r.status !== "open");
+  if(filters.market) rows = rows.filter(r => r.region === filters.market);
+  if(filters.tf) rows = rows.filter(r => r.timeframe === filters.tf);
+  if(curTab === "history" && filters.status) rows = rows.filter(r => r.status === filters.status);
+  return rows;
+}
+function renderList(){
+  const list = document.getElementById("positionList");
+  visibleRows = baseRows();
+  document.getElementById("listTitle").textContent = curTab === "open" ? "Ochiq pozitsiyalar" : "History";
+  document.getElementById("listCount").textContent = visibleRows.length;
+  document.getElementById("fStatus").style.display = curTab === "history" ? "flex" : "none";
+  if(!visibleRows.length){
+    list.innerHTML = '<div class="empty">Bu bo‘limda signal yo‘q.<br>Filtrni o‘zgartiring yoki yangi signalni kuting.</div>';
+    selectRow("");
+    return;
+  }
+  list.innerHTML = visibleRows.map(r => {
+    const key = rowKey(r);
+    const no = r.signal_no ? "#" + String(r.signal_no).padStart(5,"0") : "";
+    const status = STLBL[r.status] || r.status || "Ochiq";
+    return `<button class="row${key === selectedKey ? " active" : ""}" data-key="${key}">
+      <div class="rowTop"><span class="no">${no}</span><span class="ticker">${r.ticker || ""}</span><span class="ago">${timeAgo(r.signal_time || r.created_at)}</span></div>
+      <div class="rowInfo"><span class="mini"><small>Entry</small><b>${fmt(r.entry)}</b></span><span class="mini"><small>Timeframe</small><b>${r.timeframe || "30m"}</b></span></div>
+      <span class="badge">${status}</span>
+    </button>`;
+  }).join("");
+  list.querySelectorAll(".row").forEach(btn => btn.addEventListener("click", () => selectRow(btn.dataset.key)));
+  selectRow(visibleRows.some(r => rowKey(r) === selectedKey) ? selectedKey : rowKey(visibleRows[0]));
 }
 async function load(){
   try{
-    const sb=window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-    const weekAgo=new Date(Date.now()-7*86400000).toISOString();
-    const {data:all}=await sb.from("signals").select("*").gte("created_at",weekAgo).order("created_at",{ascending:false}).limit(500);
-    allRows=all||[];
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+    const {data} = await sb.from("signals").select("*").gte("created_at", weekAgo).order("created_at", {ascending:false}).limit(500);
+    allRows = data || [];
     renderStats(allRows);
-    applyFilters();
+    renderList();
   }catch(e){
-    document.getElementById("content").innerHTML='<div style="text-align:center;padding:50px 20px;color:rgba(239,230,208,.7)">Xato: '+(e.message||e)+'</div>';
+    document.getElementById("positionList").innerHTML = '<div class="empty">Xato: '+(e.message || e)+'</div>';
   }
 }
-function setTab(t){
-  curTab=t;
-  document.getElementById("tabOpen").classList.toggle("active",t==="open");
-  document.getElementById("tabHistory").classList.toggle("active",t==="history");
-  applyFilters();
+function setTab(tab){
+  curTab = tab;
+  document.getElementById("tabOpen").classList.toggle("active", tab === "open");
+  document.getElementById("tabHistory").classList.toggle("active", tab === "history");
+  renderList();
 }
 function setupFilterGroup(groupId,key){
-  const g=document.getElementById(groupId);
-  g.querySelectorAll(".fbtn").forEach(btn=>{
-    btn.addEventListener("click",()=>{
-      g.querySelectorAll(".fbtn").forEach(b=>b.classList.remove("active"));
-      btn.classList.add("active");
-      filters[key]=btn.getAttribute("data-v");
-      applyFilters();
-    });
-  });
+  const group = document.getElementById(groupId);
+  group.querySelectorAll(".fbtn").forEach(btn => btn.addEventListener("click", () => {
+    group.querySelectorAll(".fbtn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    filters[key] = btn.dataset.v;
+    renderList();
+  }));
 }
-document.getElementById("tabOpen").addEventListener("click",()=>setTab("open"));
-document.getElementById("tabHistory").addEventListener("click",()=>setTab("history"));
-document.getElementById("refresh").addEventListener("click",load);
-setupFilterGroup("fMarket","market");
-setupFilterGroup("fTf","tf");
-setupFilterGroup("fStatus","status");
-document.getElementById("cpClose").addEventListener("click",()=>{
-  document.getElementById("chartPanel").style.display="none";
-  document.getElementById("cpTv").innerHTML="";
-});
+document.getElementById("tabOpen").addEventListener("click", () => setTab("open"));
+document.getElementById("tabHistory").addEventListener("click", () => setTab("history"));
+document.getElementById("refresh").addEventListener("click", load);
+setupFilterGroup("fMarket", "market");
+setupFilterGroup("fTf", "tf");
+setupFilterGroup("fStatus", "status");
 load();
-setInterval(load,60000);
+setInterval(load, 60000);
 </script>
 </body>
 </html>
