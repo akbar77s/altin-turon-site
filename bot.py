@@ -48,7 +48,7 @@ ASIA = [
     "000660.KS","035420.KS","051910.KS","006400.KS","207940.KS","068270.KS","003670.KS",
     "2454.TW","3008.TW","2379.TW","3711.TW","2308.TW","6669.TW",
     "DIXON.NS","POLYCAB.NS","COFORGE.NS","MPHASIS.NS","PERSISTENT.NS","TATAELXSI.NS",
-    "LTTS.NS","CDSL.NS","LTIM.NS","BSE.NS",
+    "LTTS.NS","CDSL.NS","LTM.NS","BSE.NS",
     "PLS.AX","WTC.AX","XRO.AX","PME.AX","ALU.AX","ALL.AX","REA.AX",
 ]
 
@@ -113,7 +113,10 @@ def us_midsmall(limit=200):
         except Exception as e:
             print("US ro'yxat xato:", e)
     got = list(dict.fromkeys(s for s in got if s and s != "nan"))
-    return got[:limit] if got else FALLBACK_US
+    required = min(limit, 100)
+    if len(got) < required:
+        raise RuntimeError(f"AQSh ro'yxati to'liq olinmadi: {len(got)}/{required}")
+    return got[:limit]
 
 def build_universe():
     us = us_midsmall(200)
@@ -219,35 +222,46 @@ def signal_exists(ticker,timeframe,signal_time):
             },
             timeout=20,
         )
-        if r.status_code==200:
-            return len(r.json())>0
-        print("signal_exists xato:",r.status_code,r.text[:500])
+        if r.status_code != 200:
+            raise RuntimeError(f"HTTP {r.status_code}: {r.text[:500]}")
+        return len(r.json()) > 0
     except Exception as e:
-        print("signal_exists xato:",e)
-    return False
+        raise RuntimeError(f"signal_exists xato: {e}") from e
 
 def has_open(ticker,timeframe):
-    if not SUPABASE_URL or not SUPABASE_KEY: return False
     try:
         url=SUPABASE_URL.rstrip("/")+f"/rest/v1/signals?select=id&status=eq.open&ticker=eq.{ticker}&timeframe=eq.{timeframe}&limit=1"
         r=requests.get(url,headers=_supa_headers(),timeout=15)
-        if r.status_code==200:return len(r.json())>0
-    except Exception as e: print("has_open xato:",e)
-    return False
+        if r.status_code != 200:
+            raise RuntimeError(f"HTTP {r.status_code}: {r.text[:500]}")
+        return len(r.json()) > 0
+    except Exception as e:
+        raise RuntimeError(f"has_open xato: {e}") from e
 
 def get_open_signals():
-    if not SUPABASE_URL or not SUPABASE_KEY:return []
     try:
         url=SUPABASE_URL.rstrip("/")+"/rest/v1/signals?select=id,signal_no,ticker,timeframe,entry,tp,sl,region&status=eq.open&limit=1000"
         r=requests.get(url,headers=_supa_headers(),timeout=20)
-        if r.status_code==200:return r.json()
-    except Exception as e:print("get_open_signals xato:",e)
-    return []
+        if r.status_code != 200:
+            raise RuntimeError(f"HTTP {r.status_code}: {r.text[:500]}")
+        return r.json()
+    except Exception as e:
+        raise RuntimeError(f"get_open_signals xato: {e}") from e
 
 def update_status(sig_id,status):
-    if not SUPABASE_URL or not SUPABASE_KEY:return
-    try: requests.patch(SUPABASE_URL.rstrip("/")+f"/rest/v1/signals?id=eq.{sig_id}",headers={**_supa_headers(),"Prefer":"return=minimal"},json={"status":status},timeout=15)
-    except Exception as e:print("update_status xato:",e)
+    try:
+        r=requests.patch(
+            SUPABASE_URL.rstrip("/")+f"/rest/v1/signals?id=eq.{sig_id}",
+            headers={**_supa_headers(),"Prefer":"return=minimal"},
+            json={"status":status},
+            timeout=15,
+        )
+        if r.status_code in (200,204):
+            return True
+        print("update_status xato:",r.status_code,r.text[:500])
+    except Exception as e:
+        print("update_status xato:",e)
+    return False
 
 def last_price(ticker):
     try:
@@ -269,9 +283,14 @@ def monitor_open_signals():
         if price>=tp:new_status="tp"
         elif price<=sl:new_status="sl"
         if new_status:
-            update_status(s["id"],new_status);changed+=1
             emoji="🎯" if new_status=="tp" else "🛑";label="FOYDA (TP)" if new_status=="tp" else "STOP (SL)"
-            send(f"{emoji} {fmt_no(s.get('signal_no'))} {s['ticker']} [{s['timeframe']}] — {label}\nKirish: {entry:.2f} → hozir: {price:.2f}")
+            message=f"{emoji} {fmt_no(s.get('signal_no'))} {s['ticker']} [{s['timeframe']}] — {label}\nKirish: {entry:.2f} → hozir: {price:.2f}"
+            if not update_status(s["id"],new_status):
+                raise RuntimeError(f"Signal holati Supabase'da yangilanmadi: {s['ticker']} [{s['timeframe']}]")
+            if not send(message):
+                rolled_back=update_status(s["id"],"open")
+                raise RuntimeError(f"Telegram status xabari yuborilmadi: {s['ticker']} [{s['timeframe']}]. Supabase rollback={rolled_back}")
+            changed+=1
         time.sleep(.3)
     print(f"Kuzatuv tugadi: {changed} ta signal holati o'zgardi")
 
