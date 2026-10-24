@@ -94,14 +94,25 @@ def zero_for(df, i, floor_idx):
 
 def us_midsmall(limit=200):
     got = []
-    for url in ["https://en.wikipedia.org/wiki/List_of_S%26P_400_companies", "https://en.wikipedia.org/wiki/List_of_S%26P_600_companies"]:
+    headers = {
+        "User-Agent": "AltinTuronSignalBot/1.0 (+https://github.com/akbar77s/altin-turon-site)"
+    }
+    urls = [
+        "https://en.wikipedia.org/wiki/List_of_S%26P_400_companies",
+        "https://en.wikipedia.org/wiki/List_of_S%26P_600_companies",
+    ]
+    for url in urls:
         try:
-            for tbl in pd.read_html(url):
+            page = requests.get(url, headers=headers, timeout=30)
+            page.raise_for_status()
+            for tbl in pd.read_html(io.StringIO(page.text)):
                 col = next((c for c in tbl.columns if str(c).lower() in ("symbol", "ticker", "ticker symbol")), None)
                 if col is not None:
-                    got += [str(s).replace(".", "-").strip() for s in tbl[col].tolist()]; break
-        except Exception as e: print("US ro'yxat xato:", e)
-    got = [s for s in got if s and s != "nan"]
+                    got += [str(s).replace(".", "-").strip() for s in tbl[col].tolist()]
+                    break
+        except Exception as e:
+            print("US ro'yxat xato:", e)
+    got = list(dict.fromkeys(s for s in got if s and s != "nan"))
     return got[:limit] if got else FALLBACK_US
 
 def build_universe():
@@ -326,7 +337,10 @@ def main():
     import sys
     mode=sys.argv[1] if len(sys.argv)>1 else "scan"
     if mode=="validate":
-        print("Konfiguratsiya va Python importlari OK")
+        us = us_midsmall(200)
+        if len(us) < 100:
+            raise RuntimeError(f"AQSh ro'yxati to'liq emas: {len(us)}")
+        print(f"Konfiguratsiya va Python importlari OK. AQSh ro'yxati: {len(us)}")
         return
     if mode=="report":
         print("Haftalik hisobot rejimi");weekly_report();return
