@@ -1,6 +1,8 @@
 name: Altin ulanish testi va haftalik hisobot
 
 on:
+  schedule:
+    - cron: '17 6 * * 0'
   workflow_dispatch:
     inputs:
       mode:
@@ -21,11 +23,11 @@ concurrency:
 
 jobs:
   report:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
 
@@ -52,7 +54,7 @@ jobs:
           assert not missing, 'Yetishmayotgan secrets: ' + ', '.join(missing)"
 
       - name: Test Supabase and Telegram
-        if: ${{ github.event.inputs.mode == 'test' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'test' }}
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
@@ -63,7 +65,7 @@ jobs:
           python -c "import os, requests; r=requests.post('https://api.telegram.org/bot'+os.environ['TG_TOKEN']+'/sendMessage', data={'chat_id':os.environ['TG_CHAT_ID'],'text':'✅ Altin Turon: GitHub Actions → Supabase → Telegram ulanish testi muvaffaqiyatli.'}, timeout=20); print('Telegram HTTP:',r.status_code); print(r.text[:300] if not r.ok else 'Telegram OK'); r.raise_for_status(); assert r.json().get('ok'), r.text"
 
       - name: Weekly report
-        if: ${{ github.event.inputs.mode == 'report' }}
+        if: ${{ github.event_name == 'schedule' || github.event.inputs.mode == 'report' }}
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
