@@ -133,11 +133,25 @@ def batch_download(tickers, interval, period):
         time.sleep(1)
     return out
 
+def _telegram_call(method, data, files=None, timeout=30):
+    url = f"https://api.telegram.org/bot{TOKEN}/{method}"
+    last_error = "noma'lum xato"
+    for attempt in range(1, 4):
+        try:
+            r = requests.post(url, data=data, files=files, timeout=timeout)
+            payload = r.json() if r.content else {}
+            if r.status_code == 200 and payload.get("ok"):
+                return payload.get("result") or {}
+            last_error = f"HTTP {r.status_code}: {r.text[:500]}"
+        except Exception as e:
+            last_error = str(e)
+        print(f"Telegram {method} urinish {attempt}/3 xato: {last_error}")
+        if attempt < 3:
+            time.sleep(attempt * 2)
+    return None
+
 def send(text):
-    try:
-        r = requests.post(f"https://api.telegram.org/bot{TOKEN}/sendMessage", data={"chat_id":CHAT_ID,"text":text}, timeout=15)
-        return r.status_code == 200
-    except Exception as e: print("Telegram xato:", e); return False
+    return _telegram_call("sendMessage", {"chat_id": CHAT_ID, "text": text}, timeout=20) is not None
 
 def load_sent():
     try:
@@ -153,14 +167,53 @@ def _supa_headers():
     return {"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"}
 
 def save_supabase(row):
-    if not SUPABASE_URL or not SUPABASE_KEY: return None
     try:
-        r=requests.post(SUPABASE_URL.rstrip("/")+"/rest/v1/signals",headers={**_supa_headers(),"Prefer":"return=representation"},json=row,timeout=15)
+        r=requests.post(SUPABASE_URL.rstrip("/")+"/rest/v1/signals",headers={**_supa_headers(),"Prefer":"return=representation"},json=row,timeout=20)
         if r.status_code in (200,201):
-            data=r.json(); return data[0].get("signal_no") if data else None
-        print("Supabase xato:",r.status_code,r.text[:200])
-    except Exception as e: print("Supabase xato:",e)
+            data=r.json()
+            return data[0] if data else None
+        print("Supabase saqlash xatosi:",r.status_code,r.text[:500])
+    except Exception as e:
+        print("Supabase saqlash xatosi:",e)
     return None
+
+def delete_signal(sig_id):
+    if sig_id is None:
+        return False
+    try:
+        r=requests.delete(
+            SUPABASE_URL.rstrip("/")+"/rest/v1/signals",
+            headers={**_supa_headers(),"Prefer":"return=minimal"},
+            params={"id":f"eq.{sig_id}"},
+            timeout=20,
+        )
+        if r.status_code in (200,204):
+            return True
+        print("Supabase rollback xatosi:",r.status_code,r.text[:500])
+    except Exception as e:
+        print("Supabase rollback xatosi:",e)
+    return False
+
+def signal_exists(ticker,timeframe,signal_time):
+    try:
+        r=requests.get(
+            SUPABASE_URL.rstrip("/")+"/rest/v1/signals",
+            headers=_supa_headers(),
+            params={
+                "select":"id",
+                "ticker":f"eq.{ticker}",
+                "timeframe":f"eq.{timeframe}",
+                "signal_time":f"eq.{signal_time}",
+                "limit":"1",
+            },
+            timeout=20,
+        )
+        if r.status_code==200:
+            return len(r.json())>0
+        print("signal_exists xato:",r.status_code,r.text[:500])
+    except Exception as e:
+        print("signal_exists xato:",e)
+    return False
 
 def has_open(ticker,timeframe):
     if not SUPABASE_URL or not SUPABASE_KEY: return False
@@ -212,16 +265,25 @@ def monitor_open_signals():
     print(f"Kuzatuv tugadi: {changed} ta signal holati o'zgardi")
 
 def weekly_report():
-    if not SUPABASE_URL or not SUPABASE_KEY:print("Hisobot: Supabase yo'q");return
+    from datetime import datetime,timedelta,timezone
+    week_ago=(datetime.now(timezone.utc)-timedelta(days=7)).isoformat()
     try:
-        from datetime import datetime,timedelta,timezone
-        week_ago=(datetime.now(timezone.utc)-timedelta(days=7)).isoformat()
-        url=SUPABASE_URL.rstrip("/")+f"/rest/v1/signals?select=status,rr&created_at=gte.{week_ago}&limit=5000"
-        r=requests.get(url,headers=_supa_headers(),timeout=20);rows=r.json() if r.status_code==200 else []
-    except Exception as e:print("Hisobot xato:",e);rows=[]
+        r=requests.get(
+            SUPABASE_URL.rstrip("/")+"/rest/v1/signals",
+            headers=_supa_headers(),
+            params={"select":"status,rr","created_at":f"gte.{week_ago}","limit":"5000"},
+            timeout=20,
+        )
+        if r.status_code != 200:
+            raise RuntimeError(f"Supabase HTTP {r.status_code}: {r.text[:500]}")
+        rows=r.json()
+    except Exception as e:
+        raise RuntimeError(f"Hisobot Supabase xatosi: {e}") from e
     total=len(rows);tp=sum(1 for x in rows if x.get("status")=="tp");sl=sum(1 for x in rows if x.get("status")=="sl");still_open=sum(1 for x in rows if x.get("status")=="open");closed=tp+sl;winrate=round(tp/closed*100) if closed else 0;net_r=sum(float(x.get("rr") or 0) for x in rows if x.get("status")=="tp")-sl
     msg=f"📊 HAFTALIK HISOBOT\n\nJami signal: {total}\n🎯 Foyda (TP): {tp}\n🛑 Zarar (SL): {sl}\n⏳ Ochiq: {still_open}\nG'alaba: {winrate}%\nTaxminiy natija: {net_r:+.1f}R"
-    send(msg);print("Hisobot yuborildi:",msg.replace("\n"," | "))
+    if not send(msg):
+        raise RuntimeError("Haftalik hisobot Telegram'ga yuborilmadi")
+    print("Hisobot yuborildi:",msg.replace("\n"," | "))
 
 def render_chart(df,i):
     sub=df.iloc[max(0,i-14):i+1].reset_index(drop=True);fig,ax=plt.subplots(figsize=(4.2,2.6),dpi=100);fig.patch.set_facecolor("#0C1830");ax.set_facecolor("#0C1830")
@@ -241,14 +303,35 @@ def upload_chart(png,name):
     return None
 
 def send_photo(png,caption):
-    try:
-        r=requests.post(f"https://api.telegram.org/bot{TOKEN}/sendPhoto",data={"chat_id":CHAT_ID,"caption":caption},files={"photo":("chart.png",png,"image/png")},timeout=30);return r.status_code==200
-    except Exception as e:print("Telegram photo xato:",e);return False
+    return _telegram_call(
+        "sendPhoto",
+        {"chat_id":CHAT_ID,"caption":caption},
+        files={"photo":("chart.png",png,"image/png")},
+        timeout=40,
+    ) is not None
+
+def require_config():
+    values={
+        "TG_TOKEN":TOKEN,
+        "TG_CHAT_ID":CHAT_ID,
+        "SUPABASE_URL":SUPABASE_URL,
+        "SUPABASE_KEY":SUPABASE_KEY,
+    }
+    missing=[name for name,value in values.items() if not value]
+    if missing:
+        raise RuntimeError("Yetishmayotgan secrets: "+", ".join(missing))
 
 def main():
-    if not TOKEN or not CHAT_ID:print("TG_TOKEN / TG_CHAT_ID yo'q.");return
+    require_config()
     import sys
-    if len(sys.argv)>1 and sys.argv[1]=="report":print("Haftalik hisobot rejimi");weekly_report();return
+    mode=sys.argv[1] if len(sys.argv)>1 else "scan"
+    if mode=="validate":
+        print("Konfiguratsiya va Python importlari OK")
+        return
+    if mode=="report":
+        print("Haftalik hisobot rejimi");weekly_report();return
+    if mode!="scan":
+        raise RuntimeError(f"Noma'lum rejim: {mode}")
     universe=build_universe();region_of={t:r for t,r in universe};tickers=[t for t,_ in universe]
     print(f"Jami {len(tickers)} aksiya: AQSh {sum(1 for _,r in universe if r=='AQSh')}, Yevropa {sum(1 for _,r in universe if r=='Yevropa')}, Osiyo {sum(1 for _,r in universe if r=='Osiyo')}")
     monitor_open_signals();sent=load_sent();new_count=0
@@ -264,16 +347,23 @@ def main():
             if sig is None:continue
             entry=float(sig.close);sl=zero_for(df,i,sig.peak_idx_2)
             if entry<=sl or has_open(ticker,tf):continue
-            key=f"{ticker}_{tf}_{df['date'].iloc[i]}"
-            if key in sent:continue
+            signal_time=str(df["date"].iloc[i])
+            key=f"{ticker}_{tf}_{signal_time}"
+            if key in sent or signal_exists(ticker,tf,signal_time):continue
             tp=sl+TP_MULT*(entry-sl);rr=(tp-entry)/(entry-sl);reg=region_of.get(ticker,"");png=None;chart_url=None
             try:
                 png=render_chart(df,i);fname=re.sub(r'[^A-Za-z0-9]','_',ticker)+f"_{tf}_{int(time.time()*1000)}.png";chart_url=upload_chart(png,fname)
             except Exception as e:print("Grafik xato:",e)
-            signal_no=save_supabase({"ticker":ticker,"region":reg,"timeframe":tf,"entry":round(entry,2),"tp":round(tp,2),"sl":round(sl,2),"rr":round(rr,2),"status":"open","signal_time":str(df['date'].iloc[i]),"chart_url":chart_url})
+            record=save_supabase({"ticker":ticker,"region":reg,"timeframe":tf,"entry":round(entry,2),"tp":round(tp,2),"sl":round(sl,2),"rr":round(rr,2),"status":"open","signal_time":signal_time,"chart_url":chart_url})
+            if not record:
+                raise RuntimeError(f"Signal Supabase'ga yozilmadi: {ticker} [{tf}]")
+            signal_no=record.get("signal_no")
             msg=f"🔔 SIGNAL {fmt_no(signal_no)} — {ticker} [{tf}] · {reg}\nRazvorot modeli\n\n➕ Entry: {entry:.2f}\n🎯 TP (1.618): {tp:.2f}\n🛑 SL (0): {sl:.2f}\nR:R {rr:.2f}\nVaqt: {df['date'].iloc[i]}"
             ok=send_photo(png,msg) if png else send(msg)
-            if ok:sent.add(key);new_count+=1;print(f"  Yuborildi: {fmt_no(signal_no)} {ticker} [{tf}] {reg}")
+            if not ok:
+                rolled_back=delete_signal(record.get("id"))
+                raise RuntimeError(f"Telegram yuborilmadi: {ticker} [{tf}]. Supabase rollback={rolled_back}")
+            sent.add(key);new_count+=1;print(f"  Yuborildi: {fmt_no(signal_no)} {ticker} [{tf}] {reg}")
     save_sent(sent);print(f"Tugadi. {new_count} ta yangi signal.")
 
 if __name__=="__main__":main()
